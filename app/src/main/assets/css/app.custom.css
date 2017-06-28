@@ -1,0 +1,204 @@
+* {
+     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+    :focus {
+        outline: 0;
+        border:none;
+    }
+html {
+  font-size: 15px;
+  animation-name: fadeIn;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  display:none;
+}
+
+html:focus {
+        outline: 0;
+        border:none;
+    }
+
+body
+{
+    background: url("../img/register_bg.jpg") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    padding:0px;	
+}
+	#wrap {
+		width: 1100px;
+		margin: 0 auto;
+		}
+		
+	#external-events {
+		float: left;
+		width: 150px;
+		padding: 0 10px;
+		text-align: left;
+		}
+		
+	#external-events h4 {
+		font-size: 16px;
+		margin-top: 0;
+		padding-top: 1em;
+		}
+		
+	.external-event { /* try to mimick the look of a real event */
+		margin: 10px 0;
+		padding: 2px 4px;
+		background: #3366CC;
+		color: #fff;
+		font-size: .85em;
+		cursor: pointer;
+		}
+		
+	#external-events p {
+		margin: 1.5em 0;
+		font-size: 11px;
+		color: #666;
+		}
+		
+	#external-events p input {
+		margin: 0;
+		vertical-align: middle;
+		}
+
+	#calendar {
+/* 		float: right; */
+		width: 100%;
+		background-color: #FFFFFF;
+		  border-radius: 6px;
+        box-shadow: 0 1px 2px #C3C3C3;
+		-webkit-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
+-moz-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
+box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
+		}
+		.fc-toolbar
+		{
+				padding:10px;
+			
+		}
+.room-list-group
+{
+	padding:0px 5px;
+	border: none;
+	cursor:pointer;
+}
+.fc-button {
+    box-sizing: border-box;
+    cursor: pointer;
+    font-size: 1em;
+    height: 2.1em;
+    margin: 0;
+    padding: 0 0.6em;
+    white-space: nowrap;
+}
+.fc-state-default {
+    background-color: #f5f5f5;
+    background-image: linear-gradient(to bottom, #ffffff, #e6e6e6);
+    background-repeat: repeat-x;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
+    color: #333;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+}
+.btn{
+	background-repeat: repeat-x;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);	
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.50);
+	}
+.modal-header{
+	background : #A3C5D5;
+	color:black;		
+}
+.modal-dialog {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.modal-content {
+  height: auto;
+  min-height: 100%;
+  border-radius: 0;
+}
+.panel {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+.centered-wrapper {
+    position: relative;
+    text-align: center;
+}
+.centered-wrapper:before {
+    content: "";
+    position: relative;
+    display: inline-block;
+    width: 0; height: 100%;
+    vertical-align: middle;
+}
+.centered-content {
+    display: inline-block;
+    vertical-align: middle;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}
+.list-group-item:last-child {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+.alert {
+  border: 1px solid transparent;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  margin-bottom: 20px;
+  padding: 15px;
+
+}
+
+.port-image
+{
+    width: 100%;
+}
+
+.gallery_product
+{
+    margin-bottom: 30px;
+}
+
+.bg-orange
+{
+	background-color: #FDD78F;
+	color:#804B01;
+}
+.bg-gray
+{
+	background-color: #E3E3E3;
+	color:#6D6D6D;
+}
+.bg-red
+{
+	background-color: #FF9994;
+	color:#C20000;
+}
+.collapsing {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  -webkit-transform: translateZ(0);
+  -webkit-transition: height 0.35s ease 1s linear;
+  -moz-transition: height 0.35s ease 1s linear;
+  -o-transition: height 0.35s ease 1s linear;
+  -ms-transition: height 0.35s ease 1s linear;
+  transition: height 0.35s ease 1s linear;
+  -webkit-transition: height 0.35s ease;
+  transition: height 0.35s ease;
+}

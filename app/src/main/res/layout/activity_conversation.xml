@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/activity_horizontal_margin"
+    android:paddingEnd="0dp"
+    android:fadeScrollbars="true"
+    android:smoothScrollbar="true"
+    tools:context="org.kelkarkul.kitesmessenger.ConversationActivity">
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pr_pb"
+        android:layout_centerInParent="true"/>
+<ListView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/conversation_list"
+    android:divider="#2200"
+    android:dividerHeight="1dp"
+    android:fastScrollAlwaysVisible="true"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/no_conver"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:textAppearance="@style/TextStyle"
+        android:text="No dont have any conversations !"
+        android:textColor="@android:color/black"/>
+</RelativeLayout>

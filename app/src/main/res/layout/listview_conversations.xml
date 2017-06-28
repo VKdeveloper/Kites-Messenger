@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingEnd="5dp"
+    android:paddingStart="0dp"
+    android:layout_marginBottom="5dp">
+<ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:id="@+id/user_dp"
+    android:src="@mipmap/ic_avatar"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/user_id"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vikrant Kelkar"
+            android:id="@+id/user_name"
+            android:textAppearance="@style/TextStyle"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:textSize="18sp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:singleLine="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="1"
+                android:textSize="13sp"
+                android:paddingTop="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="5dp"
+                android:textStyle="bold|italic"
+                android:textAlignment="textEnd"
+                android:id="@+id/notification_badge"
+                android:background="@drawable/notification_conv_bg"
+                android:textColor="@android:color/white" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_online"
+                android:layout_marginEnd="8dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_msg"
+            android:textAppearance="@style/TextStyle"
+            android:text="Are you online ?"
+            android:singleLine="true"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textSize="15sp"/>
+    </LinearLayout>
+</LinearLayout>

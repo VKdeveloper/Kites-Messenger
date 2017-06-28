@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingStart="@dimen/activity_horizontal_margin"
+
+    android:fadeScrollbars="true"
+    android:smoothScrollbar="true"
+    tools:context="org.kelkarkul.kitesmessenger.ContactsActivity">
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pb"
+        android:layout_centerInParent="true"/>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fastScrollAlwaysVisible="true"
+        android:id="@+id/contacts_list"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/no_con"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:textAppearance="@style/TextStyle"
+        android:text="No dont have any contacts !"
+        android:textColor="@android:color/black"/>
+</RelativeLayout>

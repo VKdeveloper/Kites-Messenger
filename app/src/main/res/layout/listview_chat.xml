@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingEnd="@dimen/activity_horizontal_margin"
+    android:paddingStart="@dimen/activity_horizontal_margin">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextStyle"
+        android:padding="10dp"
+        android:gravity="end"
+        android:textAlignment="textEnd"
+        android:id="@+id/msg_left"
+        android:textColor="@android:color/black"
+        android:text="Msg 1"
+        android:layout_alignParentEnd="false"
+        android:background="@drawable/messenger_txt_bg"
+        android:textSize="16sp"
+        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/msg_left"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="5dp"
+        android:gravity="center_vertical"
+        android:textAlignment="center"
+        android:background="@drawable/messenger_txt_bg">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextStyle"
+        android:padding="10dp"
+        android:id="@+id/msg_right_chat"
+        android:visibility="visible"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/send_stat"
+            android:layout_marginEnd="5dp"
+            android:paddingEnd="5dp"
+            android:src="@drawable/ic_double_check"/>
+    </LinearLayout>
+</RelativeLayout>
