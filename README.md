@@ -2,7 +2,7 @@
 
 #### Kites - Messenger is the open source messenger. 
 
-Library used includes `Apache` , `Merlin` and some default `AOSP` libraries.
+Library used includes `Apache` , `Merlin` and `AOSP` libraries.
 
 The "Kites Messenger" name, the application logo are property of Kelkar Kul Samvardhan Trust. You may not use the logo or the logo's custom typeface.
 
