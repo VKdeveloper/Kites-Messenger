@@ -1,13 +1,19 @@
 package org.kelkarkul.kitesmessenger;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
+import android.support.annotation.UiThread;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 public class ContactsActivity extends AppCompatActivity {
@@ -51,14 +58,29 @@ public class ContactsActivity extends AppCompatActivity {
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                StorageController sc = new StorageController(ContactsActivity.this);
                                 SharedPreferences.Editor sp = getSharedPreferences("user_conv",MODE_PRIVATE).edit();
-                                sp.putString("USER_NUM",user_msg.getText().toString());
+                                sp.putString("USER_NUM",user_msg.getText().toString().trim());
                                 sp.putString("USER_NAME",user_name.getText().toString());
+                                HashMap<String,String> k = new HashMap<String, String>();
+                                k.put("FULLNAME",user_name.getText().toString());
+                                k.put("USER_NUM",user_msg.getText().toString().trim());
+                                ArrayList<HashMap<String,String>> list = sc.getUserDet();
+                                List<String> l = new ArrayList<String>();
+                                for(int j = 0; j < list.size();j++) {
+                                    l.add(list.get(j).get("USER_NUM"));
+                                }
+                                if(!l.contains(user_msg.getText().toString().trim()))
+                                {
+                                    sc.insertUser(k);
+                                }
+                                sp.putString("USER_ID",sc.getUser(user_msg.getText().toString().trim()));
                                 sp.apply();
                                 sp.commit();
                                 Intent chat_n = new Intent(ContactsActivity.this,ChatActivity.class);
                                 startActivity(chat_n);
                                 finish();
+                                //Toast.makeText(ContactsActivity.this, sc.getUser(user_msg.getText().toString().trim()), Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
                             }
                         });
@@ -74,45 +96,76 @@ public class ContactsActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if (resultCode  == RESULT_OK) {
+                Intent reboot = new Intent(ContactsActivity.this,ContactsActivity.class);
+                startActivity(reboot);
+                finish();
+            }
+            else
+            {
+                Intent reboot = new Intent(ContactsActivity.this,ContactsActivity.class);
+                startActivity(reboot);
+                finish();
+                Toast.makeText(ContactsActivity.this, "Did you allow permission ?", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception ex) {
+            Toast.makeText(ContactsActivity.this, "Something went wrong",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
     public class loadCon extends AsyncTask<String,String,String>
     {
         ArrayList<HashMap<String,String>> list = new ArrayList<>();
-        ConversationListHandler conversationListHandler;
+        ContactsListHandler contactslisthandler;
         @Override
         protected String doInBackground(String... params) {
-            String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '"
-                    + ("1") + "'";
-            String sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-                    + " COLLATE LOCALIZED ASC";
-            Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, selection
-                    + " AND " + ContactsContract.Contacts.HAS_PHONE_NUMBER
-                    + "=1",null, sortOrder);
+            try {
+                String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '"
+                        + ("1") + "'";
+                String sortOrder = ContactsContract.Contacts.DISPLAY_NAME
+                        + " COLLATE LOCALIZED ASC";
+                Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, selection
+                        + " AND " + ContactsContract.Contacts.HAS_PHONE_NUMBER
+                        + "=1",null, sortOrder);
 //            Cursor phones = getContentResolver().query(
 //                    ContactsContract.Contacts.CONTENT_URI, null, selection
 //                            + " AND " + ContactsContract.Contacts.HAS_PHONE_NUMBER
 //                            + "=1", null, sortOrder);
-            if (phones.moveToFirst()) {
-                do
-                {
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put("FULLNAME", phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
-                    map.put("USER_MSG", phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                    map.put("USER_ID", phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
-                    //String name=phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                    // String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    // Toast.makeText(getApplicationContext(),name, Toast.LENGTH_LONG).show()
-                    list.add(map);
+                if (phones.moveToFirst()) {
+                    do
+                    {
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("FULLNAME", phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+                        map.put("USER_MSG", phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                        map.put("USER_ID", phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+                        //String name=phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                        // String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        // Toast.makeText(getApplicationContext(),name, Toast.LENGTH_LONG).show()
+                        list.add(map);
+                    }
+                    while (phones.moveToNext());
                 }
-                while (phones.moveToNext());
+                phones.close();
+                //list = sc.getConversations();
+                if(list.size() > 0)
+                {
+                    //tv.setVisibility(View.GONE);
+                    //lv.setVisibility(View.VISIBLE);
+                    contactslisthandler = new ContactsListHandler(ContactsActivity.this,list,R.layout.listview_contacts,new String[]{"FULLNAME","USER_MSG","USER_ID"},new int[]{R.id.user_name,R.id.user_msg,R.id.user_id});
+                    //lv.setAdapter(conversationListHandler);
+                }
+
             }
-            phones.close();
-            //list = sc.getConversations();
-            if(list.size() > 0)
+            catch (Exception e)
             {
-                //tv.setVisibility(View.GONE);
-                //lv.setVisibility(View.VISIBLE);
-                conversationListHandler = new ConversationListHandler(ContactsActivity.this,list,R.layout.listview_contacts,new String[]{"FULLNAME","USER_MSG","USER_ID"},new int[]{R.id.user_name,R.id.user_msg,R.id.user_id});
-                //lv.setAdapter(conversationListHandler);
+                e.printStackTrace();
+                Toast.makeText(ContactsActivity.this, "Something went wrong !", Toast.LENGTH_SHORT).show();
             }
 
             return null;
@@ -126,7 +179,7 @@ public class ContactsActivity extends AppCompatActivity {
             {
                 tv.setVisibility(View.GONE);
                 lv.setVisibility(View.VISIBLE);
-                lv.setAdapter(conversationListHandler);
+                lv.setAdapter(contactslisthandler);
             }
             else
             {

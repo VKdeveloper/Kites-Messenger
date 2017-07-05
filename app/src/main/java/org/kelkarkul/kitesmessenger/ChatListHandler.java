@@ -40,15 +40,19 @@ public class ChatListHandler extends SimpleAdapter {
     ViewHolder holder;
     List<? extends Map<String, ?>> data_list;
     int resource;
+    StorageController sc;
+    Context ctx;
     public ChatListHandler(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
         super(context, data, resource, from, to);
         inflater = LayoutInflater.from(context);
         this.data_list = data;
         this.resource =resource;
+        this.ctx = context;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        sc = new StorageController(ctx);
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = inflater.inflate(resource, null);
@@ -71,8 +75,16 @@ public class ChatListHandler extends SimpleAdapter {
 
         //holder.user_name.setText(String.valueOf(data_list.get(position).get("FULLNAME")));
         //holder.user_id.setText(String.valueOf(data_list.get(position).get("USER_ID")));
-        holder.user_msg_right.setText(String.valueOf(data_list.get(position).get("USER_MSG")));
+        holder.user_msg_right.setText(String.valueOf(data_list.get(position).get("MSG")));
         holder.user_msg_left.setVisibility(View.GONE);
+        if(String.valueOf(data_list.get(position).get("MSG_STAT")).equals("N")) {
+            holder.user_msg_right.setCompoundDrawablesWithIntrinsicBounds(null, null, ctx.getResources().getDrawable(R.drawable.ic_single_check), null);
+        }
+        else
+        {
+            holder.user_msg_right.setCompoundDrawablesWithIntrinsicBounds(null, null, ctx.getResources().getDrawable(R.drawable.ic_double_check), null);
+        }
+
         //((TextView)convertView).setText(String.valueOf(data_list.get(position).get("USER_MSG")));
         //holder.user_msg_left.setText(String.valueOf(data_list.get(position-1).get("USER_MSG")));
         return convertView;
@@ -93,7 +105,7 @@ public class ChatListHandler extends SimpleAdapter {
 
     @Override
     public Object getItem(int position) {
-        return data_list.get(position).get("USER_MSG");
+        return data_list.get(position).get("MSG");
     }
 
     @Override

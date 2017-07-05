@@ -34,7 +34,6 @@ public class Api {
     {
         String result,message ;
         result ="";
-        message ="";
         SharedPreferences.Editor j = ctx.getSharedPreferences("OTP_SESSION", Context.MODE_PRIVATE).edit();
         switch(url)
         {
@@ -42,7 +41,8 @@ public class Api {
                 j.putString("otp",number);
                 j.apply();
                 j.commit();
-                message ="Thanks%20for%20registering%20,%20your%20otp%20is%20"+otp;
+                message ="Thanks%20for%20registering%20on%20KITES%20,%20your%20otp%20is%20"+otp;
+                //message ="Thanks%20for%20registering%20,%20your%20otp%20is%20"+otp;
                 result = "http://bulksms.mysmsmantra.com:8080/WebSMS/SMSAPI.jsp?username=VKDeveloper&password=vikrant7&sendername=KKITES&mobileno="+number+"&message="+message;
                 break;
             default:

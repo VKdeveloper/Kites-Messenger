@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -33,10 +34,13 @@ import java.util.List;
 
 public class RestoreActivity extends AppCompatActivity {
     StorageController sc;
+    ProgressBar pr_bg;
+    Button btn_next;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restore);
+        pr_bg = (ProgressBar) findViewById(R.id.pr_bg);
         FontsOverride.setDefaultFont(this, "MONOSPACE", "font.ttf");
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -49,6 +53,15 @@ public class RestoreActivity extends AppCompatActivity {
         }, 500);
         sc = new StorageController(RestoreActivity.this);
         SharedPreferences sp = getSharedPreferences("messenger_user_stat",MODE_PRIVATE);
+        btn_next = (Button) findViewById(R.id.btn_next);
+        btn_next.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent start = new Intent(RestoreActivity.this,IntActivity.class);
+                startActivity(start);
+                finish();
+            }
+        });
         new getConv().execute(sp.getString("userNum",""));
 
     }
@@ -102,39 +115,44 @@ public class RestoreActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            try {
-                JSONObject obj = new JSONObject(result);
-                //HTTPControllers controllers = new HTTPControllers(MainActivity.this);
-                JSONArray user_conv = obj.getJSONArray("user_det");
-                if(user_conv.length() > 0)
-                {
-                    for (int i = 0; i < user_conv.length(); i++) {
-                        JSONObject c = user_conv.getJSONObject(i);
-                        HashMap<String, String> h = new HashMap<String, String>();
-                        if(c.getString("STATUS").equals("Y")) {
-                            h.put("USER_ID", c.getString("ID"));
-                            h.put("FNAME", c.getString("FNAME"));
-                            h.put("LNAME", c.getString("LNAME"));
-                            h.put("FULLNAME", c.getString("FULLNAME"));
-                            h.put("USER_STATUS", c.getString("USER_STATUS"));
-                            h.put("DP_URL", c.getString("DP_URL"));
-                            h.put("USER_NUM", c.getString("USER_NUM"));
-                            sc.insertUser(h);
-                        }
-                        else {
-                            Toast.makeText(RestoreActivity.this, "Something went wrong !", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-                Intent conv = new Intent(RestoreActivity.this,ConversationActivity.class);
+            pr_bg.setVisibility(View.GONE);
+//            try {
+//                JSONObject obj = new JSONObject(result);
+//                //HTTPControllers controllers = new HTTPControllers(MainActivity.this);
+//                JSONArray user_conv = obj.getJSONArray("user_det");
+//                if(user_conv.length() > 0)
+//                {
+//                    for (int i = 0; i < user_conv.length(); i++) {
+//                        JSONObject c = user_conv.getJSONObject(i);
+//                        HashMap<String, String> h = new HashMap<String, String>();
+//                        if(c.getString("STATUS").equals("Y")) {
+//                            h.put("USER_ID", c.getString("ID"));
+//                            h.put("FNAME", c.getString("FNAME"));
+//                            h.put("LNAME", c.getString("LNAME"));
+//                            h.put("FULLNAME", c.getString("FULLNAME"));
+//                            h.put("USER_STATUS", c.getString("USER_STATUS"));
+//                            h.put("DP_URL", c.getString("DP_URL"));
+//                            h.put("USER_NUM", c.getString("USER_NUM"));
+//                            sc.insertUser(h);
+//                        }
+//                        else {
+//                            Toast.makeText(RestoreActivity.this, "Something went wrong !", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                }
+//                Intent conv = new Intent(RestoreActivity.this,IntActivity.class);
+//                startActivity(conv);
+//                finish();
+//            }
+//            catch (Exception e)
+//            {
+//                btn_next.setVisibility(View.VISIBLE);
+//                Toast.makeText(RestoreActivity.this, "Connection problem.", Toast.LENGTH_SHORT).show();
+//                e.printStackTrace();
+//            }
+                Intent conv = new Intent(RestoreActivity.this,IntActivity.class);
                 startActivity(conv);
                 finish();
-            }
-            catch (Exception e)
-            {
-                Toast.makeText(RestoreActivity.this, "Connection problem.", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
         }
 
         @Override

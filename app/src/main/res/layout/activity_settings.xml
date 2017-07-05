@@ -16,6 +16,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:drawingCacheQuality="high"
                 android:src="@mipmap/ic_avatar"/>
             <LinearLayout
                 android:layout_width="wrap_content"

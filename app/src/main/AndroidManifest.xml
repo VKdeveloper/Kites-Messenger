@@ -14,17 +14,25 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:allowClearUserData="true"
+        android:allowTaskReparenting="false"
+        android:isGame="false"
+        android:hardwareAccelerated="true"
+        android:backupInForeground="true"
+        android:banner="@mipmap/ic_launcher"
+        android:largeHeap="true"
+        android:uiOptions="splitActionBarWhenNarrow"
         android:theme="@style/AppTheme">
         <activity android:name=".IntActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -39,6 +47,10 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name="com.novoda.merlin.service.MerlinService"
+            android:exported="false" />
 
         <activity android:name=".RestoreActivity" />
         <activity
@@ -70,12 +82,20 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.kelkarkul.kitesmessenger.SettingsActivity" />
         </activity>
-        <activity android:name=".InviteActivity"
-            android:parentActivityName=".SettingsActivity"
-            android:label="Invite">
+        <activity
+            android:name=".InviteActivity"
+            android:label="Invite"
+            android:parentActivityName=".SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.kelkarkul.kitesmessenger.SettingsActivity" />
+        </activity>
+        <activity android:name=".StatusActivity"
+            android:label="Status"
+            android:parentActivityName=".ConversationActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.kelkarkul.kitesmessenger.ConversationActivity" />
         </activity>
     </application>
 

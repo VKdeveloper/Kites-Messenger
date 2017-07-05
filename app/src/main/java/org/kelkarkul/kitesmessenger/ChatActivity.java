@@ -25,6 +25,7 @@ public class ChatActivity extends Activity {
     ArrayList<HashMap<String,String>> list ;
     ChatListHandler clh;
     LinearLayout ll;
+    StorageController sc;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,15 +37,14 @@ public class ChatActivity extends Activity {
         ImageView iv = (ImageView) findViewById(R.id.back_key);
         lv = (ListView) findViewById(R.id.list_chat);
         ll = (LinearLayout) findViewById(R.id.user_profile);
+        sc = new StorageController(ChatActivity.this);
         SharedPreferences sp = getSharedPreferences("user_conv",MODE_PRIVATE);
         header_title.setText(sp.getString("USER_NAME",""));
-        list= new ArrayList<HashMap<String,String>>();
+        list= sc.getConv(sp.getString("USER_ID",""));
         sub_title.setText("last live on 7:00 pm");
 //        HashMap<String,String> map = new HashMap<String, String>();
 //        map.put("USER_MSG","Awesome @");
-//        list.add(map);
-        clh = new ChatListHandler(ChatActivity.this,list,R.layout.listview_chat,new String[]{"USER_MSG"},new int[]{R.id.msg_right_chat});
-        lv.setAdapter(clh);
+        clh = new ChatListHandler(ChatActivity.this,list,R.layout.listview_chat,new String[]{"MSG"},new int[]{R.id.msg_right_chat});
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,13 +59,18 @@ public class ChatActivity extends Activity {
 
                             msg_txt.setHint("Enter Message");
                         }
-                    }, 700);
+                    }, 1000);
                 }
                 else {
                     HashMap<String, String> map = new HashMap<String, String>();
-                    map.put("USER_MSG", msg_txt.getText().toString());
+                    SharedPreferences sp = getSharedPreferences("user_conv",MODE_PRIVATE);
+                    map.put("MSG", msg_txt.getText().toString());
+                    map.put("USER_ID", sp.getString("USER_ID",""));
+                    map.put("MSG_STAT", "N");
                     list.add(map);
                     msg_txt.setText("");
+                    StorageController sc = new StorageController(ChatActivity.this);
+                    sc.insertMsg(map);
                     //if(list.size() >0)
                     //{
                     // clh = new ChatListHandler(ChatActivity.this,list,R.layout.listview_chat,new String[]{"USER_MSG"},new int[]{R.id.msg_right});
@@ -79,6 +84,7 @@ public class ChatActivity extends Activity {
                 }
             }
         });
+        lv.setAdapter(clh);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -90,6 +96,8 @@ public class ChatActivity extends Activity {
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent conv = new Intent(ChatActivity.this,ConversationActivity.class);
+                startActivity(conv);
                 finish();
             }
         });

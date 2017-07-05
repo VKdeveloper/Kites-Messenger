@@ -17,7 +17,8 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fastScrollAlwaysVisible="true"
+        android:fastScrollEnabled="true"
+        android:overScrollMode="ifContentScrolls"
         android:id="@+id/contacts_list"/>
     <TextView
         android:layout_width="match_parent"

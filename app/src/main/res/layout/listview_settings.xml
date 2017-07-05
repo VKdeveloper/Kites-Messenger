@@ -8,6 +8,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:id="@+id/icon_settings"
+        android:drawingCacheQuality="high"
         android:padding="20dp"/>
     <TextView
         android:layout_width="match_parent"

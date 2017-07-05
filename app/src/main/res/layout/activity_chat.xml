@@ -22,6 +22,7 @@
             android:src="@android:drawable/arrow_up_float"
             android:padding="10dp"
             android:id="@+id/back_key"
+            android:drawingCacheQuality="high"
             android:rotation="270"/>
             <ImageView
                 android:layout_width="wrap_content"
@@ -63,20 +64,24 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:id="@+id/list_chat"
-        android:fastScrollAlwaysVisible="true"
         android:stackFromBottom="true"
         android:divider="@android:color/transparent"
         android:layout_below="@+id/act_bar"
         android:orientation="vertical"
+        android:fastScrollEnabled="true"
+        android:overScrollMode="ifContentScrolls"
         android:layout_above="@+id/button_panel"/>
+    <!--android:fastScrollAlwaysVisible="true"-->
     <LinearLayout
         android:id="@+id/button_panel"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:paddingTop="10dp"
         android:paddingLeft="20dp"
-        android:paddingRight="20dp">
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp">
         <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -103,7 +108,8 @@
             android:layout_marginBottom="3dp"
             android:layout_marginTop="3dp"
             android:src="@drawable/ic_send_arrow"
-            android:background="@drawable/btn_send" />
+            android:background="@drawable/btn_send"
+            android:drawingCacheQuality="high"/>
     </LinearLayout>
 
 </RelativeLayout>

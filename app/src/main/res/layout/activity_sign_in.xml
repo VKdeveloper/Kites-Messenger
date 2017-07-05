@@ -9,12 +9,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="#f5f5f5"
     android:orientation="vertical"
+    android:textAppearance="@style/TextStyle"
     tools:context="org.kelkarkul.kitesmessenger.SignInActivity">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter your number , to get started !"
         android:textAppearance="@style/TextStyle"
+        android:text="Enter your number , to get started !"
         android:padding="10dp"
         android:textSize="16sp"
         android:textColor="@android:color/black"/>
@@ -34,7 +35,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/number_txt"
-            android:textAlignment="center"
             android:textSize="18sp"
             android:inputType="number"
             android:maxLength="10"
@@ -85,7 +85,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textColor="#000"
-                android:background="@android:color/transparent"
+                android:background="@android:color/white"
                 android:text="Later"
                 android:id="@+id/btn_exit"/>
             <Button

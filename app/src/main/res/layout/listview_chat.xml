@@ -35,15 +35,17 @@
         android:padding="10dp"
         android:id="@+id/msg_right_chat"
         android:visibility="visible"
+        android:drawablePadding="5dp"
+        android:textAlignment="textStart"
         android:textColor="@android:color/black"
         android:textSize="16sp"
         />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/send_stat"
-            android:layout_marginEnd="5dp"
-            android:paddingEnd="5dp"
-            android:src="@drawable/ic_double_check"/>
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:id="@+id/send_stat"-->
+            <!--android:layout_marginEnd="5dp"-->
+            <!--android:paddingEnd="5dp"-->
+            <!--android:src="@drawable/ic_double_check"/>-->
     </LinearLayout>
 </RelativeLayout>

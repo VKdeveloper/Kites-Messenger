@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,15 +41,18 @@ public class ConversationActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final TextView user_name = (TextView) view.findViewById(R.id.user_name);
                 final TextView user_msg = (TextView) view.findViewById(R.id.user_msg);
+                final TextView user_id = (TextView) view.findViewById(R.id.user_id);
                                 SharedPreferences.Editor sp = getSharedPreferences("user_conv",MODE_PRIVATE).edit();
                                 sp.putString("USER_NUM",user_msg.getText().toString());
                                 sp.putString("USER_NAME",user_name.getText().toString());
+                                sp.putString("USER_ID",user_id.getText().toString());
                                 sp.apply();
                                 sp.commit();
                                 Intent chat_n = new Intent(ConversationActivity.this,ChatActivity.class);
                                 startActivity(chat_n);
+                                finish();
 
-                // Toast.makeText(ContactsActivity.this, user_msg.getText().toString(), Toast.LENGTH_SHORT).show();
+               // Toast.makeText(ConversationActivity.this, user_id.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         });
         FontsOverride.setDefaultFont(this, "MONOSPACE", "font.ttf");
@@ -77,11 +81,17 @@ public class ConversationActivity extends AppCompatActivity {
                 //Toast.makeText(this, "Google selected", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(ConversationActivity.this,ContactsActivity.class);
                 startActivity(i);
+                finish();
                 break;
             case R.id.action_settings:
                 //Toast.makeText(this, "Google selected", Toast.LENGTH_SHORT).show();
                 Intent i_s = new Intent(ConversationActivity.this,SettingsActivity.class);
                 startActivity(i_s);
+                break;
+            case R.id.action_status:
+                //Toast.makeText(this, "Google selected", Toast.LENGTH_SHORT).show();
+                Intent a_s = new Intent(ConversationActivity.this,StatusActivity.class);
+                startActivity(a_s);
                 break;
         }
         return true;
@@ -94,23 +104,27 @@ public class ConversationActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             //list = sc.getConversations();
-
-            String[] id = {"1","2","3"};
-            String[] name = {"Narendar Moody","Marky Zukarburg","Bell Gaets"};
-            String[] msg = {"Hello ...","Hi Marky !","Hello Dude ^_^"};
-            for(int i = 0 ; i < 3;i++)
-            {
-                HashMap<String,String> map = new HashMap<>();
-                map.put("USER_ID",id[i]);
-                map.put("FULLNAME",name[i]);
-                map.put("USER_MSG",msg[i]);
-                list.add(map);
-            }
+            StorageController sc = new StorageController(ConversationActivity.this);
+            list = sc.getUserDet();
+//            String[] id = {"1","2","3"};
+//            String[] name = {"Narendar Moody","Marky Zukarburg","Bell Gaets"};
+//            String[] msg = {"Hello ...","Hi Marky !","Hello Dude ^_^"};
+//            for(int i = 0 ; i < 3;i++)
+//            {
+//                HashMap<String,String> map = new HashMap<>();
+//                map.put("ID",id[i]);
+//                map.put("FULLNAME",name[i]);
+//                map.put("USER_MSG",msg[i]);
+//                map.put("USER_ID","");
+//                map.put("USER_NUM","");
+//                map.put("DP_URL","");
+//                list.add(map);
+//            }
             if(list.size() > 0)
             {
                 //tv.setVisibility(View.GONE);
                 //lv.setVisibility(View.VISIBLE);
-                conversationListHandler = new ConversationListHandler(ConversationActivity.this,list,R.layout.listview_conversations,new String[]{"USER_ID","FULLNAME","USER_MSG"},new int[]{R.id.user_id,R.id.user_name,R.id.user_msg});
+                conversationListHandler = new ConversationListHandler(ConversationActivity.this,list,R.layout.listview_conversations,new String[]{"ID","FULLNAME","USER_MSG"},new int[]{R.id.user_id,R.id.user_name,R.id.user_msg});
                 //lv.setAdapter(conversationListHandler);
             }
 
@@ -132,6 +146,7 @@ public class ConversationActivity extends AppCompatActivity {
                 lv.setVisibility(View.GONE);
                 tv.setVisibility(View.VISIBLE);
             }
+            //Toast.makeText(ConversationActivity.this, String.valueOf(list.size()), Toast.LENGTH_SHORT).show();
         }
     }
 }

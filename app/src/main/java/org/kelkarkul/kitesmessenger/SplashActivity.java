@@ -57,6 +57,7 @@ public class SplashActivity extends AppCompatActivity {
             }
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
                 prDialog = ProgressDialog.show(SplashActivity.this, "Just a minute", "Setting up things .. this may take time .");
 //                if (url.equals(my_app_url)) {
 //                    Intent intent = new Intent(SplashActivity.this, NumberActivity.class);
@@ -64,12 +65,17 @@ public class SplashActivity extends AppCompatActivity {
 //                    startActivity(intent);
 //                    finish();
 //                }
-                super.onPageStarted(view, url, favicon);
             }
             @Override
             public void onPageFinished(WebView view, String url) {
-                if(prDialog.isShowing()){
-                    prDialog.dismiss();
+                try {
+                    if (prDialog.isShowing()) {
+                        prDialog.dismiss();
+                    }
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
                 }
             }
         };
@@ -92,78 +98,18 @@ public class SplashActivity extends AppCompatActivity {
         webView.addJavascriptInterface(new WebAppInterface(this), "messenger");
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setAllowFileAccess(true);
-        if (ContextCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) SplashActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(SplashActivity.this);
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle("Permission necessary");
-                alertBuilder.setMessage("External storage permission is necessary");
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions((Activity) SplashActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                    }
-                });
-
-                AlertDialog alert = alertBuilder.create();
-                alert.show();
-            } else {
-                ActivityCompat.requestPermissions((Activity) SplashActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS, Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        for (String PERMISSION : PERMISSIONS) {
+            if (!hasPermissions(this, PERMISSION)) {
+                ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
             }
-            //return false;}
-            //else {
-            // return true;
-            // }
         }
-        if (ContextCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) SplashActivity.this, Manifest.permission.READ_SMS)) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(SplashActivity.this);
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle("Permission necessary");
-                alertBuilder.setMessage("SMS permission is necessary");
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+    }
 
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions((Activity) SplashActivity.this, new String[]{Manifest.permission.READ_SMS}, 1);
-                    }
-                });
 
-                AlertDialog alert = alertBuilder.create();
-                alert.show();
-            } else {
-                ActivityCompat.requestPermissions((Activity) SplashActivity.this, new String[]{Manifest.permission.READ_SMS}, 1);
-            }
-            //return false;}
-            //else {
-            // return true;
-            // }
-        }
-        if (ContextCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) SplashActivity.this, Manifest.permission.SEND_SMS)) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(SplashActivity.this);
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle("Permission necessary");
-                alertBuilder.setMessage("SMS sending permission is necessary");
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions((Activity) SplashActivity.this, new String[]{Manifest.permission.SEND_SMS}, 1);
-                    }
-                });
-
-                AlertDialog alert = alertBuilder.create();
-                alert.show();
-            } else {
-                ActivityCompat.requestPermissions((Activity) SplashActivity.this, new String[]{Manifest.permission.SEND_SMS}, 1);
-            }
-            //return false;}
-            //else {
-            // return true;
-            // }
-        }
+    public boolean hasPermissions(Context ctx,String per) {
+        return ContextCompat.checkSelfPermission(ctx, per) == PackageManager.PERMISSION_GRANTED;
     }
 
     //    @Override
@@ -242,11 +188,24 @@ public class SplashActivity extends AppCompatActivity {
                 e.printStackTrace();
                 Toast.makeText(SplashActivity.this, "Auth failed", Toast.LENGTH_SHORT).show();
             }
+            if(prDialog.isShowing())
+            {
+                prDialog.dismiss();
+            }
             overridePendingTransition(0,0);
             Intent j = new Intent(SplashActivity.this,IntActivity.class);
             startActivity(j);
-            overridePendingTransition(0,0);
             finish();
+            overridePendingTransition(0,0);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if ((prDialog != null) && prDialog.isShowing()) {
+            prDialog.dismiss();
+            prDialog = null;
         }
     }
 }

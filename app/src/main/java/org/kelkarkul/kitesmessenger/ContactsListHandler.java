@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,7 @@ import java.util.Map;
 /**
  * Created by Asgard on 24-06-2017.
  */
-public class ConversationListHandler extends SimpleAdapter {
+public class ContactsListHandler extends SimpleAdapter {
 
     /**
      * Constructor
@@ -32,22 +31,19 @@ public class ConversationListHandler extends SimpleAdapter {
      *                 TextViews. The first N views in this list are given the values of the first N columns
      */
     LayoutInflater inflater;
-    ViewHolder holder;
+
     List<? extends Map<String, ?>> data_list;
     int resource;
-    Context ctx;
-
-    public ConversationListHandler(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
+    ViewHolder holder;
+    public ContactsListHandler(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
         super(context, data, resource, from, to);
         inflater = LayoutInflater.from(context);
         this.data_list = data;
         this.resource =resource;
-        this.ctx = context;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        StorageController sc = new StorageController(ctx);
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = inflater.inflate(resource, null);
@@ -63,10 +59,8 @@ public class ConversationListHandler extends SimpleAdapter {
         }
 
         holder.user_name.setText(String.valueOf(data_list.get(position).get("FULLNAME")));
-        holder.user_id.setText(String.valueOf(data_list.get(position).get("ID")));
-        //Toast.makeText(ctx,String.valueOf(position) , Toast.LENGTH_SHORT).show();
-        //holder.user_msg.setText(sc.getMsg(String.valueOf(data_list.get(position).get("ID"))));
-        holder.user_msg.setText(sc.getMsg(sc.getUser(String.valueOf(data_list.get(position).get("USER_NUM")))));
+        holder.user_id.setText(String.valueOf(data_list.get(position).get("USER_ID")));
+        holder.user_msg.setText(String.valueOf(data_list.get(position).get("USER_MSG")));
         return convertView;
     }
 

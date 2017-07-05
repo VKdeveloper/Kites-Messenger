@@ -8,6 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/user_dp"
+        android:drawingCacheQuality="high"
         android:src="@mipmap/ic_avatar"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,7 +42,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginRight="5dp"
-                android:src="@drawable/ic_online"/>
+                android:src="@drawable/ic_online"
+                android:drawingCacheQuality="high"/>
         </LinearLayout>
         <TextView
             android:layout_width="match_parent"

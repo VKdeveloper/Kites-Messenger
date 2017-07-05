@@ -1,5 +1,8 @@
 package org.kelkarkul.kitesmessenger;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -8,9 +11,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +31,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.novoda.merlin.Merlin;
+import com.novoda.merlin.MerlinBuilder;
+import com.novoda.merlin.MerlinsBeard;
+import com.novoda.merlin.registerable.bind.Bindable;
+import com.novoda.merlin.registerable.connection.Connectable;
+import com.novoda.merlin.registerable.disconnection.Disconnectable;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -34,6 +49,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,20 +60,54 @@ public class SignInActivity extends AppCompatActivity {
     AutoCompleteTextView actv_email_txt;
     EditText otp_text;
     Button btn_next;
+   // Merlin merlin;
+    MerlinsBeard merlinsBeard;
+    //protected Merlin merlin;
+    //MerlinBuilder merlinBuilder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         getSupportActionBar().setElevation(0);
-        Button btn_exit = (Button) findViewById(R.id.btn_exit);
+        if(getIntent().getStringExtra("R") != null)
+        {
+            Intent reboot = new Intent(SignInActivity.this,SignInActivity.class);
+            startActivity(reboot);
+            finish();
+        }
+
+//        merlinBuilder.withConnectableCallbacks().withDisconnectableCallbacks().build(SignInActivity.this);
+        final Button btn_exit = (Button) findViewById(R.id.btn_exit);
         btn_next = (Button) findViewById(R.id.btn_next);
+        btn_next.setVisibility(View.GONE);
         actv_email_txt = (AutoCompleteTextView) findViewById(R.id.number_txt);
         otp_text = (EditText) findViewById(R.id.otp_txt);
         otp_text.setVisibility(View.GONE);
         btn_exit.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                finish();
+                if(btn_exit.getText().equals("Turn on connection")){
+                    try {
+                        Object sbservice = getSystemService("statusbar");
+                        Class<?> statusbarManager = Class.forName("android.app.StatusBarManager");
+                        Method showsb;
+                        if (Build.VERSION.SDK_INT >= 17) {
+                            showsb = statusbarManager.getMethod("expandNotificationsPanel");
+                        } else {
+                            showsb = statusbarManager.getMethod("expand");
+                        }
+                        showsb.invoke(sbservice);
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                        Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                        startActivity(intent);
+                    }
+                }
+                else {
+                    finish();
+                }
             }
         });
         btn_next.setOnClickListener(new View.OnClickListener(){
@@ -68,17 +118,17 @@ public class SignInActivity extends AppCompatActivity {
                 }
                 else {
                     Handler handler = new Handler();
-                    Handler head = new Handler();
+//                    Handler head = new Handler();
                     final SharedPreferences sp_get = getSharedPreferences("messenger_user_stat", Context.MODE_PRIVATE);
-                    head.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Do something after 100ms
-                            if (otp_text.getText().toString().equals(sp_get.getString("otp_num", ""))) {
-                                new ProgressLoader(SignInActivity.this).execute();
-                            }
-                        }
-                    }, 550);
+//                    head.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            //Do something after 100ms
+//                            if (otp_text.getText().toString().equals(sp_get.getString("otp_num", ""))) {
+//                                new ProgressLoader(SignInActivity.this).execute();
+//                            }
+//                        }
+//                    }, 550);
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -103,6 +153,16 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
         });
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                //Do something after 100ms
+//                FontsOverride.setDefaultFont(SignInActivity.this, "MONOSPACE", "font.ttf");
+//
+//            }
+//        }, 500);
+
         FontsOverride.setDefaultFont(this, "MONOSPACE", "font.ttf");
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -110,10 +170,76 @@ public class SignInActivity extends AppCompatActivity {
             public void run() {
                 //Do something after 100ms
                 FontsOverride.setDefaultFont(SignInActivity.this, "MONOSPACE", "font.ttf");
-
             }
         }, 500);
+        merlinsBeard = MerlinsBeard.from(SignInActivity.this);
+        final Handler handler_beared = new Handler();
+        handler_beared.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (merlinsBeard.isConnected() || merlinsBeard.isConnectedToWifi()) {
+                    // Connected, do something!
+                    btn_next.setVisibility(View.VISIBLE);
+                    btn_exit.setText("Later");
+                } else {
+                    // Disconnected, do something!
+                    btn_next.setVisibility(View.GONE);
+                    btn_exit.setText("Turn on connection");
+                    //Toast.makeText(SignInActivity.this, "Internet not available", Toast.LENGTH_SHORT).show();
+                }
+                handler_beared.postDelayed(this,500);
+            }
+        },500);
+
+//        if (ContextCompat.checkSelfPermission(SignInActivity.this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+//            if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) SignInActivity.this, Manifest.permission.SEND_SMS)) {
+//                android.support.v7.app.AlertDialog.Builder alertBuilder = new android.support.v7.app.AlertDialog.Builder(SignInActivity.this);
+//                alertBuilder.setCancelable(true);
+//                alertBuilder.setTitle("Permission necessary");
+//                alertBuilder.setMessage("SMS sending permission is necessary");
+//                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//
+//                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        ActivityCompat.requestPermissions((Activity) SignInActivity.this, new String[]{Manifest.permission.SEND_SMS}, 1);
+//                    }
+//                });
+//
+//                android.support.v7.app.AlertDialog alert = alertBuilder.create();
+//                alert.show();
+//            } else {
+//                ActivityCompat.requestPermissions((Activity) SignInActivity.this, new String[]{Manifest.permission.SEND_SMS}, 1);
+            //}
+            //return false;}
+            //else {
+            // return true;
+            // }
+//        }
     }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        merlin = new Merlin.Builder().withDisconnectableCallbacks().withConnectableCallbacks().build(SignInActivity.this);
+//        merlin.bind();
+//        merlin.registerConnectable(new Connectable() {
+//            @Override
+//            public void onConnect() {
+//                // Do something you haz internet!
+//                btn_next.setVisibility(View.VISIBLE);
+//            }
+//        });
+//        merlin.registerDisconnectable(new Disconnectable() {
+//            @Override
+//            public void onDisconnect() {
+//                // Do something you dont have internet!
+//                btn_next.setVisibility(View.GONE);
+//            }
+//        });
+    }
+
+
 
     public void validateField(final String num)
     {
@@ -140,11 +266,11 @@ public class SignInActivity extends AppCompatActivity {
                             //new getOTP(num).execute(String.valueOf(i1));
                             SimpleDateFormat _sdfWatchTime = new SimpleDateFormat("HH");
                             String dt = _sdfWatchTime.format(new Date());
-                            if (Integer.parseInt(dt) < 21 && Integer.parseInt(dt) > 9) {
+                           // if (Integer.parseInt(dt) < 21 && Integer.parseInt(dt) > 9) {
                                 new getOTP(String.valueOf(num)).execute(String.valueOf(i1));
-                            } else {
-                                Toast.makeText(SignInActivity.this, "Sorry , Server(s) are in Maintenance", Toast.LENGTH_SHORT).show();
-                            }
+//                            } else {
+//                                Toast.makeText(SignInActivity.this, "Sorry , Server(s) are in Maintenance", Toast.LENGTH_SHORT).show();
+//                            }
                             dialog.dismiss();
                         }
                     });
@@ -212,19 +338,22 @@ public class SignInActivity extends AppCompatActivity {
             if (progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
-            if(result.equals("Your message is successfully sent to:91"+num))
-            {
-                otp_text.setVisibility(View.VISIBLE);
-                btn_next.setText("Confirm");
-                Toast.makeText(SignInActivity.this, "You will receive otp soon !", Toast.LENGTH_SHORT).show();
+            try {
+                if (result.equals("Your message is successfully sent to:91" + num)) {
+                    otp_text.setVisibility(View.VISIBLE);
+                    btn_next.setText("Confirm");
+                    Toast.makeText(SignInActivity.this, "You will receive otp soon !", Toast.LENGTH_SHORT).show();
+                } else if (result.equals("DND")) {
+                    Toast.makeText(SignInActivity.this, "You have activated Do Not Disturb(DND) ! , Please turn it off .", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(SignInActivity.this, "OTP Error !", Toast.LENGTH_SHORT).show();
+                }
             }
-            else if(result.equals("DND"))
+            catch (Exception e)
             {
-                Toast.makeText(SignInActivity.this, "You have activated Do Not Disturb(DND) ! , Please turn it off .", Toast.LENGTH_SHORT).show();
-            }
-            else
-            {
-                Toast.makeText(SignInActivity.this, "OTP Error !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignInActivity.this, "Something went wrong..", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignInActivity.this, result, Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
             }
             // txt.setText(result);
             // might want to change "executed" for the returned string passed
@@ -280,8 +409,14 @@ public class SignInActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     //Do something after 100ms
-                    if (progressDialog.isShowing())
-                        progressDialog.dismiss();
+                    try {
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
 
                 }
             }, 1200);
@@ -290,8 +425,10 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+    @Override
     protected void onResume() {
         super.onResume();
+        //merlin.bind();
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.intent.action.SmsReceiver");
         registerReceiver(ReceivefromService, filter);
@@ -300,6 +437,7 @@ public class SignInActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        //merlin.unbind();
         super.onPause();
         try {
             unregisterReceiver(ReceivefromService);

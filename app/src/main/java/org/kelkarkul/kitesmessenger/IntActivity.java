@@ -22,6 +22,7 @@ public class IntActivity extends AppCompatActivity {
             else
             {
                 Intent sign_in = new Intent(IntActivity.this,SignInActivity.class);
+                sign_in.putExtra("R","true");
                 startActivity(sign_in);
                 finish();
             }
