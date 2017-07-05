@@ -5,7 +5,6 @@ package org.kelkarkul.kitesmessenger;
  */
 import android.content.Context;
 import android.graphics.Typeface;
-
 import java.lang.reflect.Field;
 
 /**

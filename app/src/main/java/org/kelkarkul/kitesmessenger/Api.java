@@ -43,7 +43,7 @@ public class Api {
                 j.commit();
                 message ="Thanks%20for%20registering%20on%20KITES%20,%20your%20otp%20is%20"+otp;
                 //message ="Thanks%20for%20registering%20,%20your%20otp%20is%20"+otp;
-                result = "http://bulksms.mysmsmantra.com:8080/WebSMS/SMSAPI.jsp?username=VKDeveloper&password=vikrant7&sendername=KKITES&mobileno="+number+"&message="+message;
+                result = parent_url+"otp.php?send_otp=true&mobileno="+number+"&message="+message;
                 break;
             default:
                 return result;

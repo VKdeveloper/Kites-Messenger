@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/KitesMessenger.iml" filepath="$PROJECT_DIR$/KitesMessenger.iml" />
+      <module fileurl="file://$PROJECT_DIR$/KitesMessengerGit.iml" filepath="$PROJECT_DIR$/KitesMessengerGit.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

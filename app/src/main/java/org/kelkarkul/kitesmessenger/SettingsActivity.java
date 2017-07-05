@@ -1,15 +1,12 @@
 package org.kelkarkul.kitesmessenger;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.provider.Contacts;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
