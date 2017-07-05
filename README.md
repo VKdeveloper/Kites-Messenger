@@ -15,3 +15,5 @@ The "Kites Messenger" name, the application logo are property of Kelkar Kul Samv
 You may use the word "Kites Messenger" in a product name only as a descriptor, such as "for Kites Messenger" . In other messaging, the word "Kites Messenger" may be used in text as a descriptor, as long as it is followed by a proper generic term (for example, "Kites Messenger application"). Any use of the Kites Messenger name must include footer attribution in your communications: "Kites Messenger is a application of Kelkar Kul Samvardhan Trust."
 
 All other trademarks/logos used in the application are the property of their respective owners.
+
+Website : www.kelkarkul.org
