@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -32,7 +33,7 @@ public class ProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         CollapsingToolbarLayout layout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         //layout.setBackground(new ColorDrawable(Color.parseColor("#008080")));
-        layout.setBackground(getResources().getDrawable(R.drawable.kelkar_kul));
+        layout.setBackground(getResources().getDrawable(R.drawable.default_bg));
         FontsOverride.setDefaultFont(this, "MONOSPACE", "font.ttf");
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -42,5 +43,7 @@ public class ProfileActivity extends AppCompatActivity {
                 FontsOverride.setDefaultFont(ProfileActivity.this, "MONOSPACE", "font.ttf");
             }
         }, 500);
+        TextView user_num = (TextView) findViewById(R.id.user_num);
+        user_num.setText(sp.getString("USER_NUM",""));
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,8 +21,8 @@ class StorageController extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + " ( ID INTEGER PRIMARY KEY AUTOINCREMENT ,USER_ID TEXT, FNAME TEXT , LNAME TEXT , FULLNAME TEXT ,USER_NUM TEXT,DP_URL TEXT)";
-        String CREATE_USER_MSG = "CREATE TABLE " + TABLE_MSG + " ( ID INTEGER PRIMARY KEY AUTOINCREMENT ,USER_ID TEXT, MSG TEXT,MSG_STAT TEXT)";
+        String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + " ( ID INTEGER PRIMARY KEY AUTOINCREMENT ,USER_ID TEXT, FULLNAME TEXT ,USER_NUM TEXT,DP_URL TEXT,SYNC_STATUS TEXT)";
+        String CREATE_USER_MSG = "CREATE TABLE " + TABLE_MSG + " ( ID INTEGER PRIMARY KEY AUTOINCREMENT ,USER_ID TEXT, MSG TEXT,MSG_STAT TEXT,SRVID TEXT)";
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_USER_MSG);
     }
@@ -73,11 +74,10 @@ class StorageController extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         //for(int i=0 ; i < list.size(); i++) {
         values.put("USER_ID", list.get("USER_ID"));
-        values.put("FNAME", list.get("FNAME"));
-        values.put("LNAME", list.get("LNAME"));
         values.put("FULLNAME", list.get("FULLNAME"));
         values.put("DP_URL", list.get("DP_URL"));
         values.put("USER_NUM",list.get("USER_NUM"));
+        values.put("SYNC_STATUS","N");
         // Inserting Row
         db.insert(TABLE_USER, null, values);
         //db.close(); // Closing database connection
@@ -151,4 +151,67 @@ class StorageController extends SQLiteOpenHelper {
         db.close();
         return map;
     }
+
+    public void updateMsg(String n,String srvid,String stat)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql_lite = "UPDATE "+TABLE_MSG+" SET MSG_STAT = '"+stat+"',SRVID = '"+srvid+"' WHERE ID = '"+n+"'";
+        db.execSQL(sql_lite);
+        db.close();
+    }
+
+    public void updateConv(String n,String srvid,String stat)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql_lite = "UPDATE "+TABLE_USER+" SET SYNC_STATUS = '"+stat+"' WHERE ID = '"+n+"'";
+        db.execSQL(sql_lite);
+        db.close();
+    }
+
+
+    /////////////////////// Server Sync ///////////////////////
+
+    public ArrayList<HashMap<String,String>> getMessages()
+    {
+        ArrayList<HashMap<String,String>> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql_lite = "select ID,USER_ID,MSG,MSG_STAT from "+TABLE_MSG+" WHERE MSG_STAT='N'";
+        Cursor c = db.rawQuery(sql_lite,null);
+        if (c.moveToFirst()) {
+            do {
+                HashMap<String,String>  values = new HashMap<>();
+                values.put("ID", c.getString(0));
+                values.put("USER_ID", c.getString(1));
+                values.put("MSG",  c.getString(2));
+                values.put("MSG_STAT", c.getString(3));
+                // Adding contact to list
+                list.add(values);
+            } while (c.moveToNext());
+        }
+        db.close();
+        return list;
+    }
+
+    public ArrayList<HashMap<String,String>> getConv()
+    {
+        ArrayList<HashMap<String,String>> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql_lite = "select ID,USER_ID,FULLNAME,USER_NUM from "+TABLE_USER+" WHERE SYNC_STATUS='N'";
+        Cursor c = db.rawQuery(sql_lite,null);
+        if (c.moveToFirst()) {
+            do {
+                HashMap<String,String>  values = new HashMap<>();
+                values.put("ID", c.getString(0));
+                values.put("USER_ID", c.getString(1));
+                values.put("FULLNAME", c.getString(2));
+                values.put("USER_NUM",c.getString(3));
+                // Adding contact to list
+                list.add(values);
+            } while (c.moveToNext());
+        }
+        db.close();
+        return list;
+    }
+
+
 }

@@ -24,11 +24,13 @@ public class ChatActivity extends Activity {
     ChatListHandler clh;
     LinearLayout ll;
     StorageController sc;
+    Handler handler_beared ,handler_exit;
+    boolean mHand =false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        TextView header_title = (TextView) findViewById(R.id.header_title);
+        final TextView header_title = (TextView) findViewById(R.id.header_title);
         TextView sub_title = (TextView) findViewById(R.id.sub_title);
         final EditText msg_txt = (EditText) findViewById(R.id.edittext_msg);
         ImageButton btn_send = (ImageButton) findViewById(R.id.btn_send);
@@ -40,6 +42,8 @@ public class ChatActivity extends Activity {
         header_title.setText(sp.getString("USER_NAME",""));
         list= sc.getConv(sp.getString("USER_ID",""));
         sub_title.setText("last live on 7:00 pm");
+        handler_beared = new Handler();
+        handler_exit = new Handler();
 //        HashMap<String,String> map = new HashMap<String, String>();
 //        map.put("USER_MSG","Awesome @");
         clh = new ChatListHandler(ChatActivity.this,list,R.layout.listview_chat,new String[]{"MSG"},new int[]{R.id.msg_right_chat});
@@ -60,25 +64,35 @@ public class ChatActivity extends Activity {
                     }, 1000);
                 }
                 else {
+                    mHand = true;
                     HashMap<String, String> map = new HashMap<String, String>();
                     SharedPreferences sp = getSharedPreferences("user_conv",MODE_PRIVATE);
                     map.put("MSG", msg_txt.getText().toString());
                     map.put("USER_ID", sp.getString("USER_ID",""));
                     map.put("MSG_STAT", "N");
                     list.add(map);
+                    msg_txt.setFocusable(true);
+                    msg_txt.setFocusableInTouchMode(true);
+                    msg_txt.requestFocus();
                     msg_txt.setText("");
                     StorageController sc = new StorageController(ChatActivity.this);
                     sc.insertMsg(map);
                     //if(list.size() >0)
                     //{
-                    // clh = new ChatListHandler(ChatActivity.this,list,R.layout.listview_chat,new String[]{"USER_MSG"},new int[]{R.id.msg_right});
+                    //clh = new ChatListHandler(ChatActivity.this,list,R.layout.listview_chat,new String[]{"USER_MSG"},new int[]{R.id.msg_right});
                     clh.setListData(list);
                     clh.notifyDataSetChanged();
                     scrollMyListViewToBottom();
-                    //lv.invalidate();
+                    handler_exit.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            handler_beared.removeCallbacksAndMessages(null);
+                            mHand = false;
+                        }
+                    },2500);
+
                     // Toast.makeText(ChatActivity.this,String.valueOf(list.size()) , Toast.LENGTH_SHORT).show();
                     //}
-
                 }
             }
         });
@@ -106,13 +120,41 @@ public class ChatActivity extends Activity {
                 startActivity(profile_activity);
             }
         });
+//        final Handler handler_beared = new Handler();
+
+
+        //scrollMyListViewToBottom();
     }
-    private void scrollMyListViewToBottom() {
+
+    private synchronized void scrollMyListViewToBottom() {
         lv.post(new Runnable() {
             @Override
             public void run() {
+
                 // Select the last row so it will scroll into view...
-                lv.setSelection(clh.getCount() - 1);
+                SharedPreferences sp = getSharedPreferences("user_conv",MODE_PRIVATE);
+                list= sc.getConv(sp.getString("USER_ID",""));
+                clh = new ChatListHandler(ChatActivity.this,list,R.layout.listview_chat,new String[]{"MSG"},new int[]{R.id.msg_right_chat});
+                lv.setAdapter(clh);
+                //lv.setSelection(clh.getCount() - 1);
+                lv.smoothScrollToPosition(clh.getCount() - 1);
+                if(mHand) {
+                    handler_beared.postDelayed(this, 1000);
+                }
+//                handler_exit.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        //clh.setListData(list);
+//                        //runOnUiThread(new Runnable() {
+//                        //  @Override
+//                        // public void run() {
+//                        handler_beared.removeCallbacksAndMessages(null);
+//                        //handler_beared = null;
+//                        mHand = false;
+//                        // }
+//                        //});
+//                    }
+//                },1020);
             }
         });
     }

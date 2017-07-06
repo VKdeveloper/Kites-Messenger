@@ -24,6 +24,12 @@ public class Api {
             case "user_det":
                 result = parent_url+"messenger_user_det.php?get_det=true";
                 break;
+            case "sync_messages":
+                result = parent_url+"messenger_messages.php?json_res=true";
+                break;
+            case "sync_conv":
+                result = parent_url+"messenger_conv.php?json_res=true";
+                break;
             default:
                 return result;
         }
@@ -42,7 +48,6 @@ public class Api {
                 j.apply();
                 j.commit();
                 message ="Thanks%20for%20registering%20on%20KITES%20,%20your%20otp%20is%20"+otp;
-                //message ="Thanks%20for%20registering%20,%20your%20otp%20is%20"+otp;
                 result = parent_url+"otp.php?send_otp=true&mobileno="+number+"&message="+message;
                 break;
             default:

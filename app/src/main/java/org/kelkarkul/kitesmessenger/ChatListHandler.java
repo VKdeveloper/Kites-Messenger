@@ -78,6 +78,10 @@ public class ChatListHandler extends SimpleAdapter {
         if(String.valueOf(data_list.get(position).get("MSG_STAT")).equals("N")) {
             holder.user_msg_right.setCompoundDrawablesWithIntrinsicBounds(null, null, ctx.getResources().getDrawable(R.drawable.ic_single_check), null);
         }
+        else if(String.valueOf(data_list.get(position).get("MSG_STAT")).equals("S"))
+        {
+            holder.user_msg_right.setCompoundDrawablesWithIntrinsicBounds(null, null, ctx.getResources().getDrawable(R.drawable.ic_double_pending_check), null);
+        }
         else
         {
             holder.user_msg_right.setCompoundDrawablesWithIntrinsicBounds(null, null, ctx.getResources().getDrawable(R.drawable.ic_double_check), null);
@@ -89,8 +93,11 @@ public class ChatListHandler extends SimpleAdapter {
     }
 
     public void setListData(List<? extends Map<String, ?>> data){
+        //notifyDataSetInvalidated();
         data_list = data;
+        //notifyDataSetChanged();
     }
+
 
     private class ViewHolder {
         TextView user_msg_right,user_msg_left;
