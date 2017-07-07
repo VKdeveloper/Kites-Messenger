@@ -2,7 +2,7 @@
 
 #### Kites - Messenger is the open source messenger. 
 
-Library used includes `Apache` , `Merlin` and `AOSP` libraries.
+Library used includes `Apache` , `Merlin` , `Picasso`, `Gson2Json` and `AOSP` libraries.
 
 ### Notice
 
