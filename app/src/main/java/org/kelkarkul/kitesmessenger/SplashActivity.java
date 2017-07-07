@@ -50,7 +50,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                prDialog = ProgressDialog.show(SplashActivity.this, "Just a minute", "Setting up things .. this may take time .");
+ //               prDialog = ProgressDialog.show(SplashActivity.this, "Just a minute", "Setting up things .. this may take time .");
 //                if (url.equals(my_app_url)) {
 //                    Intent intent = new Intent(SplashActivity.this, NumberActivity.class);
 //                    intent.setData(Uri.parse(url));
@@ -60,21 +60,38 @@ public class SplashActivity extends AppCompatActivity {
             }
             @Override
             public void onPageFinished(WebView view, String url) {
-                try {
-                    if (prDialog.isShowing()) {
-                        prDialog.dismiss();
-                    }
-                }
-                catch(Exception e)
-                {
-                    e.printStackTrace();
-                }
+//                try {
+//                    if (prDialog.isShowing()) {
+//                        prDialog.dismiss();
+//                    }
+//                }
+//                catch(Exception e)
+//                {
+//                    e.printStackTrace();
+//                }
             }
         };
 
         webView.setWebViewClient(client);
         webView.setVerticalScrollBarEnabled(false);
-        webView.loadUrl("file:///android_asset/index.html");
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            int PERMISSION_ALL = 1;
+            String[] PERMISSIONS = {Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS, Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            int j =0;
+            for (String PERMISSION : PERMISSIONS) {
+                if (!hasPermissions(this, PERMISSION)) {
+                    ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+                }
+                j++;
+                if(j == PERMISSIONS.length)
+                {
+                    webView.loadUrl("file:///android_asset/index.html");
+                }
+            }
+        }
+        else {
+            webView.loadUrl("file:///android_asset/index.html");
+        }
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
@@ -90,13 +107,7 @@ public class SplashActivity extends AppCompatActivity {
         webView.addJavascriptInterface(new WebAppInterface(this), "messenger");
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setAllowFileAccess(true);
-        int PERMISSION_ALL = 1;
-        String[] PERMISSIONS = {Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS, Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        for (String PERMISSION : PERMISSIONS) {
-            if (!hasPermissions(this, PERMISSION)) {
-                ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-            }
-        }
+
     }
 
 
@@ -180,10 +191,10 @@ public class SplashActivity extends AppCompatActivity {
                 e.printStackTrace();
                 Toast.makeText(SplashActivity.this, "Auth failed", Toast.LENGTH_SHORT).show();
             }
-            if(prDialog.isShowing())
-            {
-                prDialog.dismiss();
-            }
+//            if(prDialog.isShowing())
+//            {
+//                prDialog.dismiss();
+//            }
             overridePendingTransition(0,0);
             Intent j = new Intent(SplashActivity.this,IntActivity.class);
             startActivity(j);

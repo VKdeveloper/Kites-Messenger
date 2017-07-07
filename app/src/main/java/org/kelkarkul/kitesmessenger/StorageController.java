@@ -76,8 +76,8 @@ class StorageController extends SQLiteOpenHelper {
         values.put("USER_ID", list.get("USER_ID"));
         values.put("FULLNAME", list.get("FULLNAME"));
         values.put("DP_URL", list.get("DP_URL"));
-        values.put("USER_NUM",list.get("USER_NUM"));
-        values.put("SYNC_STATUS","N");
+        values.put("USER_NUM",list.get("USER_NUM").trim());
+        values.put("SYNC_STATUS",list.get("SYNC_STATUS"));
         // Inserting Row
         db.insert(TABLE_USER, null, values);
         //db.close(); // Closing database connection
@@ -92,7 +92,7 @@ class StorageController extends SQLiteOpenHelper {
         //for(int i=0 ; i < list.size(); i++) {
         values.put("USER_ID", list.get("USER_ID"));
         values.put("MSG", list.get("MSG"));
-        values.put("MSG_STAT","N");
+        values.put("MSG_STAT",list.get("MSG_STAT"));
         // Inserting Row
         db.insert(TABLE_MSG, null, values);
         //db.close(); // Closing database connection
@@ -175,7 +175,7 @@ class StorageController extends SQLiteOpenHelper {
     {
         ArrayList<HashMap<String,String>> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String sql_lite = "select ID,USER_ID,MSG,MSG_STAT from "+TABLE_MSG+" WHERE MSG_STAT='N'";
+        String sql_lite = "select az.ID,az.USER_ID,az.MSG,az.MSG_STAT,bz.USER_NUM from "+TABLE_MSG+" az , "+TABLE_USER+" bz WHERE az.USER_ID=bz.ID and az.MSG_STAT='N'";
         Cursor c = db.rawQuery(sql_lite,null);
         if (c.moveToFirst()) {
             do {
@@ -184,6 +184,7 @@ class StorageController extends SQLiteOpenHelper {
                 values.put("USER_ID", c.getString(1));
                 values.put("MSG",  c.getString(2));
                 values.put("MSG_STAT", c.getString(3));
+                values.put("USER_NUM", c.getString(4));
                 // Adding contact to list
                 list.add(values);
             } while (c.moveToNext());

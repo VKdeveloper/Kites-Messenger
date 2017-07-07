@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -35,10 +36,10 @@ public class ConversationActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final TextView user_name = (TextView) view.findViewById(R.id.user_name);
-                final TextView user_msg = (TextView) view.findViewById(R.id.user_msg);
+                final TextView user_num = (TextView) view.findViewById(R.id.user_num);
                 final TextView user_id = (TextView) view.findViewById(R.id.user_id);
                                 SharedPreferences.Editor sp = getSharedPreferences("user_conv",MODE_PRIVATE).edit();
-                                sp.putString("USER_NUM",user_msg.getText().toString());
+                                sp.putString("USER_NUM",user_num.getText().toString());
                                 sp.putString("USER_NAME",user_name.getText().toString());
                                 sp.putString("USER_ID",user_id.getText().toString());
                                 sp.apply();
@@ -119,7 +120,7 @@ public class ConversationActivity extends AppCompatActivity {
             {
                 //tv.setVisibility(View.GONE);
                 //lv.setVisibility(View.VISIBLE);
-                conversationListHandler = new ConversationListHandler(ConversationActivity.this,list,R.layout.listview_conversations,new String[]{"ID","FULLNAME","USER_MSG"},new int[]{R.id.user_id,R.id.user_name,R.id.user_msg});
+                conversationListHandler = new ConversationListHandler(ConversationActivity.this,list,R.layout.listview_conversations,new String[]{"ID","FULLNAME","USER_NUM","USER_MSG"},new int[]{R.id.user_id,R.id.user_name,R.id.user_num,R.id.user_msg});
                 //lv.setAdapter(conversationListHandler);
             }
 

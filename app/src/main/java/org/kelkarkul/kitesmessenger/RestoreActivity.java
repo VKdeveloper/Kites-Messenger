@@ -20,11 +20,14 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class RestoreActivity extends AppCompatActivity {
@@ -57,11 +60,11 @@ public class RestoreActivity extends AppCompatActivity {
                 finish();
             }
         });
-        new getConv().execute(sp.getString("userNum",""));
+        new addUser().execute(sp.getString("userNum",""));
 
     }
 
-    private class getConv extends AsyncTask<String, Void, String> {
+    private class addUser extends AsyncTask<String, Void, String> {
 //        ProgressDialog progressDialog;
 
 
@@ -110,58 +113,181 @@ public class RestoreActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            pr_bg.setVisibility(View.GONE);
-//            try {
-//                JSONObject obj = new JSONObject(result);
-//                //HTTPControllers controllers = new HTTPControllers(MainActivity.this);
-//                JSONArray user_conv = obj.getJSONArray("user_det");
-//                if(user_conv.length() > 0)
-//                {
-//                    for (int i = 0; i < user_conv.length(); i++) {
-//                        JSONObject c = user_conv.getJSONObject(i);
-//                        HashMap<String, String> h = new HashMap<String, String>();
-//                        if(c.getString("STATUS").equals("Y")) {
-//                            h.put("USER_ID", c.getString("ID"));
-//                            h.put("FNAME", c.getString("FNAME"));
-//                            h.put("LNAME", c.getString("LNAME"));
-//                            h.put("FULLNAME", c.getString("FULLNAME"));
-//                            h.put("USER_STATUS", c.getString("USER_STATUS"));
-//                            h.put("DP_URL", c.getString("DP_URL"));
-//                            h.put("USER_NUM", c.getString("USER_NUM"));
-//                            sc.insertUser(h);
-//                        }
-//                        else {
-//                            Toast.makeText(RestoreActivity.this, "Something went wrong !", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                }
+            SharedPreferences sp = getSharedPreferences("messenger_user_stat",MODE_PRIVATE);
+            new restore().execute(sp.getString("userNum",""));
+
+        }
+
+    }
+
+
+    public class restore extends AsyncTask<String,String,String>
+    {
+
+        @Override
+        public synchronized String doInBackground(String... params)
+        {
+            HttpClient httpclient = new DefaultHttpClient();
+            Api controller = new Api(RestoreActivity.this);
+            HttpPost httppost = new HttpPost(controller.getApiUrl("user_conv"));
+            Log.i("URL",controller.getApiUrl("user_conv"));
+            try {
+                //String macAddress = wInfo.getMacAddress();
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+                nameValuePairs.add(new BasicNameValuePair("number", params[0]));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                // Execute HTTP Post Request
+                HttpResponse response = httpclient.execute(httppost);
+                // According to the JAVA API, InputStream constructor do nothing.
+                //So we can't initialize InputStream although it is not an interface
+                InputStream inputStream = response.getEntity().getContent();
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder stringBuilder = new StringBuilder();
+
+                String bufferedStrChunk = null;
+
+                while((bufferedStrChunk = bufferedReader.readLine()) != null){
+                    stringBuilder.append(bufferedStrChunk);
+                }
+
+                return stringBuilder.toString();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return "null";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            if(!result.equals("null"))
+            {
+
+             try {
+                JSONObject obj = new JSONObject(result);
+                //HTTPControllers controllers = new HTTPControllers(MainActivity.this);
+                JSONArray user_conv = obj.getJSONArray("response");
+                if(user_conv.length() > 0)
+                {
+                    for (int i = 0; i < user_conv.length(); i++) {
+                        JSONObject c = user_conv.getJSONObject(i);
+                        HashMap<String, String> h = new HashMap<String, String>();
+                            h.put("USER_ID",sc.getUser(c.getString("USER_NUM")));
+                            h.put("FULLNAME", c.getString("FULLNAME"));
+                            h.put("USER_NUM", c.getString("USER_NUM").trim());
+                            sc.insertUser(h);
+                    }
+                }
 //                Intent conv = new Intent(RestoreActivity.this,IntActivity.class);
 //                startActivity(conv);
 //                finish();
-//            }
-//            catch (Exception e)
-//            {
-//                btn_next.setVisibility(View.VISIBLE);
-//                Toast.makeText(RestoreActivity.this, "Connection problem.", Toast.LENGTH_SHORT).show();
-//                e.printStackTrace();
-//            }
+                 SharedPreferences sp = getSharedPreferences("messenger_user_stat",MODE_PRIVATE);
+                 new restoreMsgs().execute(sp.getString("userNum",""));
+            }
+            catch (Exception e)
+            {
+                btn_next.setVisibility(View.VISIBLE);
+               // Toast.makeText(RestoreActivity.this, "Connection problem.", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+
+            }
+            else
+            {
                 Intent conv = new Intent(RestoreActivity.this,IntActivity.class);
                 startActivity(conv);
                 finish();
+            }
+        }
+    }
+
+    public class restoreMsgs extends AsyncTask<String,String,String>
+    {
+
+        @Override
+        public synchronized String doInBackground(String... params)
+        {
+            HttpClient httpclient = new DefaultHttpClient();
+            Api controller = new Api(RestoreActivity.this);
+            HttpPost httppost = new HttpPost(controller.getApiUrl("user_msgs"));
+            Log.i("URL",controller.getApiUrl("user_msgs"));
+            try {
+                //String macAddress = wInfo.getMacAddress();
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+                nameValuePairs.add(new BasicNameValuePair("number", params[0]));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                // Execute HTTP Post Request
+                HttpResponse response = httpclient.execute(httppost);
+                // According to the JAVA API, InputStream constructor do nothing.
+                //So we can't initialize InputStream although it is not an interface
+                InputStream inputStream = response.getEntity().getContent();
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder stringBuilder = new StringBuilder();
+
+                String bufferedStrChunk = null;
+
+                while((bufferedStrChunk = bufferedReader.readLine()) != null){
+                    stringBuilder.append(bufferedStrChunk);
+                }
+
+                return stringBuilder.toString();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return "null";
         }
 
         @Override
-        protected void onPreExecute() {
-//            progressDialog= new ProgressDialog(SignInActivity.this);
-//            progressDialog.setMessage("Working..");
-//            progressDialog.show();
+        protected void onPostExecute(String result) {
+            pr_bg.setVisibility(View.GONE);
+            if(!result.equals("null"))
+            {
 
-        }
+                 try {
+                    JSONObject obj = new JSONObject(result);
+                    //HTTPControllers controllers = new HTTPControllers(MainActivity.this);
+                    JSONArray user_conv = obj.getJSONArray("response");
+                    if(user_conv.length() > 0)
+                    {
+                        for (int i = 0; i < user_conv.length(); i++) {
+                            JSONObject c = user_conv.getJSONObject(i);
+                            HashMap<String, String> h = new HashMap<String, String>();
+                                h.put("USER_ID",sc.getUser(c.getString("USER_NUM")));
+                                h.put("MSG", c.getString("MSG"));
+                                h.put("MSG_STAT", c.getString("MSG_STAT"));
+                                sc.insertMsg(h);
+                        }
+                    }
+    //                Intent conv = new Intent(RestoreActivity.this,IntActivity.class);
+    //                startActivity(conv);
+    //                finish();
+                }
+                catch (Exception e)
+                {
+                    btn_next.setVisibility(View.VISIBLE);
+                    //Toast.makeText(RestoreActivity.this, "Connection problem.", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
 
-        @Override
-        protected void onProgressUpdate(Void... values) {
-
-            super.onPreExecute();
+            }
+            else
+            {
+                Intent conv = new Intent(RestoreActivity.this,IntActivity.class);
+                startActivity(conv);
+                finish();
+            }
         }
     }
 }

@@ -24,8 +24,14 @@ public class Api {
             case "user_det":
                 result = parent_url+"messenger_user_det.php?get_det=true";
                 break;
+            case "user_conv":
+                result = parent_url+"messenger_conv.php?get_conv=true";
+                break;
             case "sync_messages":
                 result = parent_url+"messenger_messages.php?json_res=true";
+                break;
+            case "user_msgs":
+                result = parent_url+"messenger_messages.php?sync_msgs=true";
                 break;
             case "sync_conv":
                 result = parent_url+"messenger_conv.php?json_res=true";

@@ -55,6 +55,7 @@ public class ContactsActivity extends AppCompatActivity {
                                 HashMap<String,String> k = new HashMap<String, String>();
                                 k.put("FULLNAME",user_name.getText().toString());
                                 k.put("USER_NUM",user_msg.getText().toString().trim());
+                                k.put("SYNC_STATUS","N");
                                 ArrayList<HashMap<String,String>> list = sc.getUserDet();
                                 List<String> l = new ArrayList<String>();
                                 for(int j = 0; j < list.size();j++) {

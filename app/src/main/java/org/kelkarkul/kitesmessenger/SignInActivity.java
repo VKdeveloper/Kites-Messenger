@@ -459,7 +459,7 @@ public class SignInActivity extends AppCompatActivity {
                     public void run() {
                         //Do something after 100ms
                         if (otp_text.getText().toString().equals(sp_get.getString("otp_num", ""))) {
-                            new ProgressLoader(SignInActivity.this).execute();
+                            //new ProgressLoader(SignInActivity.this).execute();
                         }
                     }
                 }, 550);

@@ -38,7 +38,7 @@ public class ChatActivity extends Activity {
         lv = (ListView) findViewById(R.id.list_chat);
         ll = (LinearLayout) findViewById(R.id.user_profile);
         sc = new StorageController(ChatActivity.this);
-        SharedPreferences sp = getSharedPreferences("user_conv",MODE_PRIVATE);
+        final SharedPreferences sp = getSharedPreferences("user_conv",MODE_PRIVATE);
         header_title.setText(sp.getString("USER_NAME",""));
         list= sc.getConv(sp.getString("USER_ID",""));
         sub_title.setText("last live on 7:00 pm");
@@ -117,6 +117,7 @@ public class ChatActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent profile_activity = new Intent(ChatActivity.this,ProfileActivity.class);
+                profile_activity.putExtra("","");
                 startActivity(profile_activity);
             }
         });
