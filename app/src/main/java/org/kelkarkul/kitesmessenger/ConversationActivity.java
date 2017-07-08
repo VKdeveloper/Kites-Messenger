@@ -61,6 +61,12 @@ public class ConversationActivity extends AppCompatActivity {
 
             }
         }, 500);
+        SharedPreferences sp = getSharedPreferences("user_info",MODE_PRIVATE);
+        if(sp.getString("user_name","").equals(""))
+        {
+            Intent n = new Intent(ConversationActivity.this,NameActivity.class);
+            startActivity(n);
+        }
     }
 
     @Override

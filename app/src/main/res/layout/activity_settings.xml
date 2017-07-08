@@ -32,7 +32,8 @@
                     android:text="Vikrant Kelkar"
                     android:textStyle="bold"
                     android:singleLine="true"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp"
+                    android:id="@+id/user_name"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

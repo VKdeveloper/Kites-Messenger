@@ -36,6 +36,12 @@ public class Api {
             case "sync_conv":
                 result = parent_url+"messenger_conv.php?json_res=true";
                 break;
+            case "get_conv":
+                result = parent_url+"messenger_conv.php?get_unsynced_conv=true";
+                break;
+            case "user_info":
+                result = parent_url+"messenger_user_info.php?set_info=true";
+                break;
             default:
                 return result;
         }

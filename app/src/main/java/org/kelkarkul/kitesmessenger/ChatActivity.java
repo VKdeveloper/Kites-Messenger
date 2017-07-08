@@ -3,6 +3,7 @@ package org.kelkarkul.kitesmessenger;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -26,6 +27,7 @@ public class ChatActivity extends Activity {
     StorageController sc;
     Handler handler_beared ,handler_exit;
     boolean mHand =false;
+    MediaPlayer m;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +66,7 @@ public class ChatActivity extends Activity {
                     }, 1000);
                 }
                 else {
+                    playBeep();
                     mHand = true;
                     HashMap<String, String> map = new HashMap<String, String>();
                     SharedPreferences sp = getSharedPreferences("user_conv",MODE_PRIVATE);
@@ -158,5 +161,18 @@ public class ChatActivity extends Activity {
 //                },1020);
             }
         });
+    }
+
+    public void playBeep() {
+        try {
+            m= MediaPlayer.create(this, R.raw.send_message);
+            if (m.isPlaying()) {
+                m.stop();
+                m.release();
+            }
+            m.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

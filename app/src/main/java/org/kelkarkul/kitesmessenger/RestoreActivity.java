@@ -165,37 +165,35 @@ public class RestoreActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-
             if(!result.equals("null"))
             {
 
-             try {
-                JSONObject obj = new JSONObject(result);
-                //HTTPControllers controllers = new HTTPControllers(MainActivity.this);
-                JSONArray user_conv = obj.getJSONArray("response");
-                if(user_conv.length() > 0)
-                {
-                    for (int i = 0; i < user_conv.length(); i++) {
-                        JSONObject c = user_conv.getJSONObject(i);
-                        HashMap<String, String> h = new HashMap<String, String>();
-                            h.put("USER_ID",sc.getUser(c.getString("USER_NUM")));
-                            h.put("FULLNAME", c.getString("FULLNAME"));
-                            h.put("USER_NUM", c.getString("USER_NUM").trim());
-                            sc.insertUser(h);
+                 try {
+                    JSONObject obj = new JSONObject(result);
+                    JSONArray user_conv = obj.getJSONArray("response");
+                    if(user_conv.length() > 0)
+                    {
+                        for (int i = 0; i < user_conv.length(); i++) {
+                            JSONObject c = user_conv.getJSONObject(i);
+                            HashMap<String, String> h = new HashMap<String, String>();
+                                h.put("USER_ID","");
+                                h.put("FULLNAME", c.getString("FULLNAME"));
+                                h.put("USER_NUM", c.getString("USER_NUM").trim());
+                                sc.insertUser(h);
+                        }
                     }
+    //                Intent conv = new Intent(RestoreActivity.this,IntActivity.class);
+    //                startActivity(conv);
+    //                finish();
+                     SharedPreferences sp = getSharedPreferences("messenger_user_stat",MODE_PRIVATE);
+                     new restoreMsgs().execute(sp.getString("userNum",""));
                 }
-//                Intent conv = new Intent(RestoreActivity.this,IntActivity.class);
-//                startActivity(conv);
-//                finish();
-                 SharedPreferences sp = getSharedPreferences("messenger_user_stat",MODE_PRIVATE);
-                 new restoreMsgs().execute(sp.getString("userNum",""));
-            }
-            catch (Exception e)
-            {
-                btn_next.setVisibility(View.VISIBLE);
-               // Toast.makeText(RestoreActivity.this, "Connection problem.", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
+                catch (Exception e)
+                {
+                    pr_bg.setVisibility(View.GONE);
+                    btn_next.setVisibility(View.VISIBLE);
+                    e.printStackTrace();
+                }
 
             }
             else
@@ -257,27 +255,27 @@ public class RestoreActivity extends AppCompatActivity {
 
                  try {
                     JSONObject obj = new JSONObject(result);
-                    //HTTPControllers controllers = new HTTPControllers(MainActivity.this);
                     JSONArray user_conv = obj.getJSONArray("response");
+
                     if(user_conv.length() > 0)
                     {
                         for (int i = 0; i < user_conv.length(); i++) {
                             JSONObject c = user_conv.getJSONObject(i);
                             HashMap<String, String> h = new HashMap<String, String>();
                                 h.put("USER_ID",sc.getUser(c.getString("USER_NUM")));
+                                h.put("SRVID",c.getString("ID"));
                                 h.put("MSG", c.getString("MSG"));
                                 h.put("MSG_STAT", c.getString("MSG_STAT"));
                                 sc.insertMsg(h);
                         }
                     }
-    //                Intent conv = new Intent(RestoreActivity.this,IntActivity.class);
-    //                startActivity(conv);
-    //                finish();
+                     Intent conv = new Intent(RestoreActivity.this,IntActivity.class);
+                     startActivity(conv);
+                     finish();
                 }
                 catch (Exception e)
                 {
                     btn_next.setVisibility(View.VISIBLE);
-                    //Toast.makeText(RestoreActivity.this, "Connection problem.", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
 

@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Asgard on 24-06-2017.
@@ -93,6 +94,7 @@ class StorageController extends SQLiteOpenHelper {
         values.put("USER_ID", list.get("USER_ID"));
         values.put("MSG", list.get("MSG"));
         values.put("MSG_STAT",list.get("MSG_STAT"));
+        values.put("SRVID",list.get("SRVID"));
         // Inserting Row
         db.insert(TABLE_MSG, null, values);
         //db.close(); // Closing database connection
@@ -168,6 +170,21 @@ class StorageController extends SQLiteOpenHelper {
         db.close();
     }
 
+    public List<String> getSrvid()
+    {
+        List<String> map = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql_lite = "select SRVID from "+TABLE_MSG;
+        Cursor c = db.rawQuery(sql_lite,null);
+        if (c.moveToFirst()) {
+            do {
+                // Adding id to list
+                map.add(c.getString(0));
+            } while (c.moveToNext());
+        }
+        db.close();
+        return map;
+    }
 
     /////////////////////// Server Sync ///////////////////////
 
@@ -175,7 +192,7 @@ class StorageController extends SQLiteOpenHelper {
     {
         ArrayList<HashMap<String,String>> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String sql_lite = "select az.ID,az.USER_ID,az.MSG,az.MSG_STAT,bz.USER_NUM from "+TABLE_MSG+" az , "+TABLE_USER+" bz WHERE az.USER_ID=bz.ID and az.MSG_STAT='N'";
+        String sql_lite = "select az.ID,az.USER_ID,az.MSG,az.MSG_STAT,az.SRVID,bz.USER_NUM from "+TABLE_MSG+" az , "+TABLE_USER+" bz WHERE az.USER_ID=bz.ID and az.MSG_STAT='N'";
         Cursor c = db.rawQuery(sql_lite,null);
         if (c.moveToFirst()) {
             do {
@@ -184,7 +201,8 @@ class StorageController extends SQLiteOpenHelper {
                 values.put("USER_ID", c.getString(1));
                 values.put("MSG",  c.getString(2));
                 values.put("MSG_STAT", c.getString(3));
-                values.put("USER_NUM", c.getString(4));
+                values.put("SRVID", c.getString(4));
+                values.put("USER_NUM", c.getString(5));
                 // Adding contact to list
                 list.add(values);
             } while (c.moveToNext());

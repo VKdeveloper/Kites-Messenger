@@ -84,13 +84,14 @@ public class OnlineService extends Service {
         public void handleMessage(Message msg)
         {
             SharedPreferences sp = getSharedPreferences("messenger_user_stat", MODE_PRIVATE);
+            SharedPreferences sp_getter = getSharedPreferences("user_info", MODE_PRIVATE);
             Gson gson = new Gson();
             StorageController sc = new StorageController(OnlineService.this);
             if(sc.getMessages().size() > 0) {
                 new msgTask().execute(sp.getString("userNum", ""), gson.toJson(sc.getMessages()));
             }
             if(sc.getConv().size() > 0) {
-                new convTask().execute(sp.getString("userNum", ""), gson.toJson(sc.getConv()));
+                new convTask().execute(sp.getString("userNum", ""), gson.toJson(sc.getConv()),sp_getter.getString("user_name",""));
             }
         }
     };
@@ -195,9 +196,11 @@ public class OnlineService extends Service {
 
             BasicNameValuePair numberBasicNameValuePair = new BasicNameValuePair("number", params[0]);
             BasicNameValuePair sysdateBasicNameValuePair = new BasicNameValuePair("json", params[1]);
+            BasicNameValuePair usernameNameValuePair = new BasicNameValuePair("user_name", params[2]);
             List<NameValuePair> nameValuePairList = new ArrayList<NameValuePair>();
             nameValuePairList.add(numberBasicNameValuePair);
             nameValuePairList.add(sysdateBasicNameValuePair);
+            nameValuePairList.add(usernameNameValuePair);
             Log.i("MSG_JSON",String.valueOf(params[1]));
                 try {
 

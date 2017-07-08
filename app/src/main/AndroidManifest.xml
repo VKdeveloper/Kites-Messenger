@@ -18,21 +18,22 @@
 
     <application
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
         android:allowClearUserData="true"
         android:allowTaskReparenting="false"
-        android:isGame="false"
-        android:hardwareAccelerated="true"
         android:backupInForeground="true"
         android:banner="@mipmap/ic_launcher"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:isGame="false"
+        android:label="@string/app_name"
         android:largeHeap="true"
-        android:uiOptions="splitActionBarWhenNarrow"
-        android:theme="@style/AppTheme">
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:uiOptions="splitActionBarWhenNarrow">
         <activity android:name=".IntActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -55,6 +56,11 @@
             android:name=".OnlineService"
             android:enabled="true"
             android:exported="true" />
+        <service
+            android:name=".MessageService"
+            android:enabled="true"
+            android:exported="true" />
+
         <activity android:name=".RestoreActivity" />
         <activity
             android:name=".ContactsActivity"
@@ -93,13 +99,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.kelkarkul.kitesmessenger.SettingsActivity" />
         </activity>
-        <activity android:name=".StatusActivity"
+        <activity
+            android:name=".StatusActivity"
             android:label="Status"
             android:parentActivityName=".ConversationActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.kelkarkul.kitesmessenger.ConversationActivity" />
         </activity>
+        <activity android:name=".NameActivity"
+            android:label="About"/>
     </application>
 
 </manifest>

@@ -20,6 +20,7 @@ public class ProfileActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         SharedPreferences sp = getSharedPreferences("user_conv",MODE_PRIVATE);
+        SharedPreferences sp_getter = getSharedPreferences("user_info",MODE_PRIVATE);
         getSupportActionBar().setTitle(sp.getString("USER_NAME",""));
         getSupportActionBar().setElevation(0);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -44,6 +45,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }, 500);
         TextView user_num = (TextView) findViewById(R.id.user_num);
+        TextView user_name = (TextView) findViewById(R.id.user_name);
+        TextView user_stat = (TextView) findViewById(R.id.user_stat);
         user_num.setText(sp.getString("USER_NUM",""));
+        user_name.setText(sp_getter.getString("user_name",""));
+        user_stat.setText(sp_getter.getString("user_stat",""));
     }
 }
