@@ -23,7 +23,7 @@ class StorageController extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + " ( ID INTEGER PRIMARY KEY AUTOINCREMENT ,USER_ID TEXT, FULLNAME TEXT ,USER_NUM TEXT,DP_URL TEXT,SYNC_STATUS TEXT)";
-        String CREATE_USER_MSG = "CREATE TABLE " + TABLE_MSG + " ( ID INTEGER PRIMARY KEY AUTOINCREMENT ,USER_ID TEXT, MSG TEXT,MSG_STAT TEXT,SRVID TEXT)";
+        String CREATE_USER_MSG = "CREATE TABLE " + TABLE_MSG + " ( ID INTEGER PRIMARY KEY AUTOINCREMENT ,USER_ID TEXT, MSG TEXT, MSG_STAT TEXT, SRVID TEXT, OWNER TEXT)";
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_USER_MSG);
     }
@@ -95,6 +95,7 @@ class StorageController extends SQLiteOpenHelper {
         values.put("MSG", list.get("MSG"));
         values.put("MSG_STAT",list.get("MSG_STAT"));
         values.put("SRVID",list.get("SRVID"));
+        values.put("OWNER",list.get("OWNER"));
         // Inserting Row
         db.insert(TABLE_MSG, null, values);
         //db.close(); // Closing database connection
@@ -122,13 +123,14 @@ class StorageController extends SQLiteOpenHelper {
     {
         ArrayList<HashMap<String,String>> map = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String sql_lite = "select MSG,MSG_STAT from "+TABLE_MSG+" where USER_ID = '"+n+"'";
+        String sql_lite = "select MSG,MSG_STAT,OWNER from "+TABLE_MSG+" where USER_ID = '"+n+"'";
         Cursor c = db.rawQuery(sql_lite,null);
         if (c.moveToFirst()) {
             do {
                 HashMap<String,String>  k = new HashMap<>();
                 k.put("MSG",c.getString(0));
                 k.put("MSG_STAT",c.getString(1));
+                k.put("OWNER",c.getString(2));
                 map.add(k);
                 // Adding contact to list
             } while (c.moveToNext());
@@ -192,7 +194,7 @@ class StorageController extends SQLiteOpenHelper {
     {
         ArrayList<HashMap<String,String>> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String sql_lite = "select az.ID,az.USER_ID,az.MSG,az.MSG_STAT,az.SRVID,bz.USER_NUM from "+TABLE_MSG+" az , "+TABLE_USER+" bz WHERE az.USER_ID=bz.ID and az.MSG_STAT='N'";
+        String sql_lite = "select az.ID,az.USER_ID,az.MSG,az.MSG_STAT,az.SRVID,bz.USER_NUM,az.OWNER from "+TABLE_MSG+" az , "+TABLE_USER+" bz WHERE az.USER_ID=bz.ID and az.MSG_STAT='N'";
         Cursor c = db.rawQuery(sql_lite,null);
         if (c.moveToFirst()) {
             do {
@@ -203,6 +205,7 @@ class StorageController extends SQLiteOpenHelper {
                 values.put("MSG_STAT", c.getString(3));
                 values.put("SRVID", c.getString(4));
                 values.put("USER_NUM", c.getString(5));
+                values.put("OWNER", c.getString(6));
                 // Adding contact to list
                 list.add(values);
             } while (c.moveToNext());

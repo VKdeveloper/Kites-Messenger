@@ -45,6 +45,7 @@ public class MessageService extends Service {
     private static Timer timer = new Timer();
     public static final String LOGIN_SESSION = "LOGIN_SESSION";
     protected int k =0;
+    protected int n =0;
     // textView is the TextView view that should display it
     //textView.setText(currentDateTimeString);
     @Override
@@ -67,7 +68,7 @@ public class MessageService extends Service {
 
     private void startService()
     {
-        timer.scheduleAtFixedRate(new mainTask(), 0,900);
+        timer.scheduleAtFixedRate(new mainTask(), 0,1500);
 
     }
     private class mainTask extends TimerTask
@@ -156,8 +157,8 @@ public class MessageService extends Service {
                     JSONObject obj = new JSONObject(result);
                     StorageController sc = new StorageController(MessageService.this);
                     JSONArray user_conv = obj.getJSONArray("response");
-                    if(k != user_conv.length()) {
                         if (user_conv.length() > 0) {
+                            if(k != user_conv.length()) {
                             k++;
                             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MessageService.this);
                             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -179,20 +180,27 @@ public class MessageService extends Service {
                             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                             mNotificationManager.notify(k, mBuilder.build());
 
-
+                            }
+                            ArrayList<HashMap<String,String>> list = sc.getUserDet();
+                            List<String> map = new ArrayList<String>();
+                            for(int j = 0 ; j < list.size(); j++)
+                            {
+                                map.add(list.get(j).get("USER_NUM"));
+                            }
                             for (int i = 0; i < user_conv.length(); i++) {
                                 JSONObject c = user_conv.getJSONObject(i);
                                 HashMap<String, String> h = new HashMap<String, String>();
                                 h.put("FULLNAME", c.getString("FULLNAME"));
-                                h.put("USER_NUM", c.getString("SENDER_NUM").trim());
+                                h.put("USER_NUM", c.getString("SENDER_NUM").trim().replace("-","").replace("+91",""));
                                 h.put("SYNC_STATUS", "Y");
-                                sc.insertUser(h);
+                                if(!map.contains(c.getString("SENDER_NUM").trim().replace("-","").replace("+91",""))) {
+                                    sc.insertUser(h);
+                                }
                             }
-                        }
 
-                        SharedPreferences sp = getSharedPreferences("messenger_user_stat", MODE_PRIVATE);
-                        new restoreMsgs().execute(sp.getString("userNum", ""));
                     }
+                    SharedPreferences sp = getSharedPreferences("messenger_user_stat", MODE_PRIVATE);
+                    new restoreMsgs().execute(sp.getString("userNum", ""));
                 }
                 catch (Exception e)
                 {
@@ -257,15 +265,49 @@ public class MessageService extends Service {
                     StorageController sc = new StorageController(MessageService.this);
                     JSONArray user_conv = obj.getJSONArray("response");
                     List<String> list = sc.getSrvid();
+                    if(n != user_conv.length()) {
+                        n++;
+                        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MessageService.this);
+                        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        mBuilder.setSmallIcon(R.drawable.ic_stat_notification);
+                        mBuilder.setContentTitle(user_conv.length() + " messages.");
+                        mBuilder.setContentText("New messages pending.");
+                        mBuilder.setSound(soundUri);
+                        Intent resultIntent = new Intent(MessageService.this, MessageService.class);
+                        resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        TaskStackBuilder stackBuilder = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                            stackBuilder = TaskStackBuilder.create(MessageService.this);
+                            stackBuilder.addParentStack(ConversationActivity.class);
+                            stackBuilder.addNextIntent(resultIntent);
+                            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(n, PendingIntent.FLAG_UPDATE_CURRENT);
+                            mBuilder.setContentIntent(resultPendingIntent);
+                        }
+
+                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        mNotificationManager.notify(n, mBuilder.build());
+
+                    }
                     if(user_conv.length() > 0)
                     {
+                        SharedPreferences sp = getSharedPreferences("messenger_user_stat",MODE_PRIVATE);
                         for (int i = 0; i < user_conv.length(); i++) {
                             JSONObject c = user_conv.getJSONObject(i);
                             HashMap<String, String> h = new HashMap<String, String>();
-                            h.put("USER_ID",sc.getUser(c.getString("USER_NUM")));
+                            h.put("USER_ID",sc.getUser(c.getString("SENDER_NUM")).trim());
                             h.put("MSG", c.getString("MSG"));
                             h.put("MSG_STAT", c.getString("MSG_STAT"));
                             h.put("SRVID", c.getString("ID"));
+                            String n ="";
+                            if(!c.getString("SENDER_NUM").trim().equals(sp.getString("userNum", "")))
+                            {
+                                n = "N";
+                            }
+                            else
+                            {
+                                n = "Y";
+                            }
+                            h.put("OWNER", n);
                             if(!list.contains(c.getString("ID"))) {
                                 sc.insertMsg(h);
                             }
@@ -278,6 +320,7 @@ public class MessageService extends Service {
                 }
 
             }
+            Log.i("Message",String.valueOf(result));
         }
     }
 }

@@ -61,7 +61,7 @@ public class ContactsActivity extends AppCompatActivity {
                                 for(int j = 0; j < list.size();j++) {
                                     l.add(list.get(j).get("USER_NUM"));
                                 }
-                                if(!l.contains(user_msg.getText().toString().trim()))
+                                if(!l.contains(user_msg.getText().toString().trim().replace("-","").replace("+91","")))
                                 {
                                     sc.insertUser(k);
                                 }
@@ -133,7 +133,7 @@ public class ContactsActivity extends AppCompatActivity {
                     {
                         HashMap<String, String> map = new HashMap<>();
                         map.put("FULLNAME", phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
-                        map.put("USER_MSG", phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                        map.put("USER_MSG", phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replace("-","").replace("+91","").replace(" ",""));
                         map.put("USER_ID", phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
                         //String name=phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                         // String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));

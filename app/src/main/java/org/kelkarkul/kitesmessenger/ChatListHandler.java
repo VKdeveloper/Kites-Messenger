@@ -61,10 +61,36 @@ public class ChatListHandler extends SimpleAdapter {
             holder.user_msg_right = (TextView) convertView.findViewById(R.id.msg_right_chat);
             //holder.flg_str = (TextView) convertView.findViewById(R.id.flg_str);
             //holder.drawable = (ImageView) convertView.findViewById(R.id.user_dp);
-            if (position % 2 == 1) {
-                holder.user_msg_right.setGravity(Gravity.RIGHT);
+            if (data_list.get(position).get("OWNER").equals("Y")) {
+                holder.user_msg_right.setGravity(Gravity.END);
+                holder.user_msg_right.setText(String.valueOf(data_list.get(position).get("MSG")));
+                holder.user_msg_left.setVisibility(View.GONE);
+                if(String.valueOf(data_list.get(position).get("MSG_STAT")).equals("N")) {
+                    holder.user_msg_right.setCompoundDrawablesWithIntrinsicBounds(null, null, ctx.getResources().getDrawable(R.drawable.ic_single_check), null);
+                }
+                else if(String.valueOf(data_list.get(position).get("MSG_STAT")).equals("S"))
+                {
+                    holder.user_msg_right.setCompoundDrawablesWithIntrinsicBounds(null, null, ctx.getResources().getDrawable(R.drawable.ic_double_pending_check), null);
+                }
+                else
+                {
+                    holder.user_msg_right.setCompoundDrawablesWithIntrinsicBounds(null, null, ctx.getResources().getDrawable(R.drawable.ic_double_check), null);
+                }
             } else {
-                holder.user_msg_left.setGravity(Gravity.LEFT);
+                holder.user_msg_left.setGravity(Gravity.START);
+                holder.user_msg_left.setText(String.valueOf(data_list.get(position).get("MSG")));
+                holder.user_msg_right.setVisibility(View.GONE);
+                if(String.valueOf(data_list.get(position).get("MSG_STAT")).equals("N")) {
+                    holder.user_msg_left.setCompoundDrawablesWithIntrinsicBounds(null, null, ctx.getResources().getDrawable(R.drawable.ic_single_check), null);
+                }
+                else if(String.valueOf(data_list.get(position).get("MSG_STAT")).equals("S"))
+                {
+                    holder.user_msg_left.setCompoundDrawablesWithIntrinsicBounds(null, null, ctx.getResources().getDrawable(R.drawable.ic_double_pending_check), null);
+                }
+                else
+                {
+                    holder.user_msg_left.setCompoundDrawablesWithIntrinsicBounds(null, null, ctx.getResources().getDrawable(R.drawable.ic_double_check), null);
+                }
             }
             convertView.setTag(holder);
         } else {
@@ -73,19 +99,7 @@ public class ChatListHandler extends SimpleAdapter {
 
         //holder.user_name.setText(String.valueOf(data_list.get(position).get("FULLNAME")));
         //holder.user_id.setText(String.valueOf(data_list.get(position).get("USER_ID")));
-        holder.user_msg_right.setText(String.valueOf(data_list.get(position).get("MSG")));
-        holder.user_msg_left.setVisibility(View.GONE);
-        if(String.valueOf(data_list.get(position).get("MSG_STAT")).equals("N")) {
-            holder.user_msg_right.setCompoundDrawablesWithIntrinsicBounds(null, null, ctx.getResources().getDrawable(R.drawable.ic_single_check), null);
-        }
-        else if(String.valueOf(data_list.get(position).get("MSG_STAT")).equals("S"))
-        {
-            holder.user_msg_right.setCompoundDrawablesWithIntrinsicBounds(null, null, ctx.getResources().getDrawable(R.drawable.ic_double_pending_check), null);
-        }
-        else
-        {
-            holder.user_msg_right.setCompoundDrawablesWithIntrinsicBounds(null, null, ctx.getResources().getDrawable(R.drawable.ic_double_check), null);
-        }
+
 
         //((TextView)convertView).setText(String.valueOf(data_list.get(position).get("USER_MSG")));
         //holder.user_msg_left.setText(String.valueOf(data_list.get(position-1).get("USER_MSG")));

@@ -57,7 +57,7 @@ public class OnlineService extends Service {
 
     private void startService()
     {
-        timer.scheduleAtFixedRate(new mainTask(), 0,900);
+        timer.scheduleAtFixedRate(new mainTask(), 0,1000);
 
     }
     private class mainTask extends TimerTask

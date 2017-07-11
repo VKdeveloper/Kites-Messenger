@@ -73,6 +73,7 @@ public class ChatActivity extends Activity {
                     map.put("MSG", msg_txt.getText().toString());
                     map.put("USER_ID", sp.getString("USER_ID",""));
                     map.put("MSG_STAT", "N");
+                    map.put("OWNER", "Y");
                     list.add(map);
                     msg_txt.setFocusable(true);
                     msg_txt.setFocusableInTouchMode(true);

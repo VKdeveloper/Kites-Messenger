@@ -13,7 +13,6 @@
         android:textAlignment="textEnd"
         android:id="@+id/msg_left"
         android:textColor="@android:color/black"
-        android:text="Msg 1"
         android:layout_alignParentEnd="false"
         android:background="@drawable/messenger_txt_bg"
         android:textSize="16sp"

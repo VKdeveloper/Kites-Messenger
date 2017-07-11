@@ -266,6 +266,7 @@ public class RestoreActivity extends AppCompatActivity {
                                 h.put("SRVID",c.getString("ID"));
                                 h.put("MSG", c.getString("MSG"));
                                 h.put("MSG_STAT", c.getString("MSG_STAT"));
+                                h.put("OWNER", c.getString("OWNER"));
                                 sc.insertMsg(h);
                         }
                     }
