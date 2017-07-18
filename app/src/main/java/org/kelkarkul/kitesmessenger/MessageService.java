@@ -21,6 +21,8 @@ import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -98,7 +100,6 @@ public class MessageService extends Service {
            // Gson gson = new Gson();
             //StorageController sc = new StorageController(MessageService.this);
             //if(sc.getMessages().size() > 0) {
-
                 new restore().execute(sp.getString("userNum", ""));
            // }
         }
@@ -265,29 +266,30 @@ public class MessageService extends Service {
                     StorageController sc = new StorageController(MessageService.this);
                     JSONArray user_conv = obj.getJSONArray("response");
                     List<String> list = sc.getSrvid();
-                    if(n != user_conv.length()) {
-                        n++;
-                        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MessageService.this);
-                        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                        mBuilder.setSmallIcon(R.drawable.ic_stat_notification);
-                        mBuilder.setContentTitle(user_conv.length() + " messages.");
-                        mBuilder.setContentText("New messages pending.");
-                        mBuilder.setSound(soundUri);
-                        Intent resultIntent = new Intent(MessageService.this, MessageService.class);
-                        resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        TaskStackBuilder stackBuilder = null;
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                            stackBuilder = TaskStackBuilder.create(MessageService.this);
-                            stackBuilder.addParentStack(ConversationActivity.class);
-                            stackBuilder.addNextIntent(resultIntent);
-                            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(n, PendingIntent.FLAG_UPDATE_CURRENT);
-                            mBuilder.setContentIntent(resultPendingIntent);
-                        }
 
-                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                        mNotificationManager.notify(n, mBuilder.build());
-
-                    }
+//                    if(n != user_conv.length()) {
+//                        n++;
+//                        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MessageService.this);
+//                        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//                        mBuilder.setSmallIcon(R.drawable.ic_stat_notification);
+//                        mBuilder.setContentTitle(user_conv.length() + " messages.");
+//                        mBuilder.setContentText("New messages pending.");
+//                        mBuilder.setSound(soundUri);
+//                        Intent resultIntent = new Intent(MessageService.this, MessageService.class);
+//                        resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        TaskStackBuilder stackBuilder = null;
+//                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+//                            stackBuilder = TaskStackBuilder.create(MessageService.this);
+//                            stackBuilder.addParentStack(ConversationActivity.class);
+//                            stackBuilder.addNextIntent(resultIntent);
+//                            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(n, PendingIntent.FLAG_UPDATE_CURRENT);
+//                            mBuilder.setContentIntent(resultPendingIntent);
+//                        }
+//
+//                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//                        mNotificationManager.notify(n, mBuilder.build());
+//
+//                    }
                     if(user_conv.length() > 0)
                     {
                         SharedPreferences sp = getSharedPreferences("messenger_user_stat",MODE_PRIVATE);
@@ -296,22 +298,70 @@ public class MessageService extends Service {
                             HashMap<String, String> h = new HashMap<String, String>();
                             h.put("USER_ID",sc.getUser(c.getString("SENDER_NUM")).trim());
                             h.put("MSG", c.getString("MSG"));
-                            h.put("MSG_STAT", c.getString("MSG_STAT"));
+                            h.put("MSG_STAT", c.getString("STATUS"));
                             h.put("SRVID", c.getString("ID"));
-                            String n ="";
+                            String n_str ="";
                             if(!c.getString("SENDER_NUM").trim().equals(sp.getString("userNum", "")))
                             {
-                                n = "N";
+                                n_str = "N";
                             }
                             else
                             {
-                                n = "Y";
+                                n_str = "Y";
                             }
-                            h.put("OWNER", n);
+                            h.put("OWNER", n_str);
                             if(!list.contains(c.getString("ID"))) {
                                 sc.insertMsg(h);
+                                n++;
+                                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MessageService.this);
+                                Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                mBuilder.setSmallIcon(R.drawable.ic_stat_notification);
+                                //mBuilder.setContentTitle(user_conv.length() + " messages.");
+                                mBuilder.setContentTitle("New message(s) arrived");
+                                mBuilder.setContentText("Messages pending to be viewed");
+                                if(n==1) {
+                                    mBuilder.setSound(soundUri);
+                                    final ChatActivity ca = new ChatActivity();
+                                    ca.updateList();
+//                                    ChatActivity.runOnUI(new Runnable()
+//                                    {
+//                                        public void run()
+//                                        {
+//                                            try
+//                                            {
+//                                                ca.clh.notifyDataSetChanged();
+////                                                ChatViewHandler chatViewHandler = new ChatViewHandler(getApplicationContext(),new ChatActivity());
+////                                                chatViewHandler.refresh();
+//                                            }
+//                                            catch (Exception e)
+//                                            {
+//                                                e.printStackTrace();
+//                                            }
+//                                        }
+//                                    });
+                                    //ca.updateList();
+                                }
+                                Intent resultIntent = new Intent(MessageService.this, MessageService.class);
+                                resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                TaskStackBuilder stackBuilder = null;
+                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                                    stackBuilder = TaskStackBuilder.create(MessageService.this);
+                                    stackBuilder.addParentStack(ConversationActivity.class);
+                                    stackBuilder.addNextIntent(resultIntent);
+                                    PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    mBuilder.setContentIntent(resultPendingIntent);
+                                }
+                                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                mNotificationManager.notify(1, mBuilder.build());
+                                Gson g = new Gson();
+                                new sync_id().execute(g.toJson(sc.getSrvidJson()));
+                            }
+                            else
+                            {
+                                n =0;
                             }
                         }
+
                     }
                 }
                 catch (Exception e)
@@ -323,5 +373,74 @@ public class MessageService extends Service {
             Log.i("Message",String.valueOf(result));
         }
     }
+
+    public class sync_id extends AsyncTask<String,String,String>
+    {
+
+        @Override
+        public synchronized String doInBackground(String... params)
+        {
+            HttpClient httpclient = new DefaultHttpClient();
+            Api controller = new Api(MessageService.this);
+            HttpPost httppost = new HttpPost(controller.getApiUrl("sync_msg_stat"));
+            Log.i("URL",controller.getApiUrl("sync_msg_stat"));
+            try {
+                //String macAddress = wInfo.getMacAddress();
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+                nameValuePairs.add(new BasicNameValuePair("json", params[0]));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                // Execute HTTP Post Request
+                HttpResponse response = httpclient.execute(httppost);
+                // According to the JAVA API, InputStream constructor do nothing.
+                //So we can't initialize InputStream although it is not an interface
+                InputStream inputStream = response.getEntity().getContent();
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder stringBuilder = new StringBuilder();
+
+                String bufferedStrChunk = null;
+
+                while((bufferedStrChunk = bufferedReader.readLine()) != null){
+                    stringBuilder.append(bufferedStrChunk);
+                }
+
+                return stringBuilder.toString();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return "null";
+        }
+
+        @Override
+        protected synchronized void onPostExecute(String result) {
+            if(!result.equals("null"))
+            {
+                try {
+                    JSONObject obj = new JSONObject(result);
+                    StorageController sc = new StorageController(MessageService.this);
+                    JSONArray user_conv = obj.getJSONArray("response");
+                    if (user_conv.length() > 0) {
+                            for (int i = 0; i < user_conv.length(); i++) {
+                                JSONObject c = user_conv.getJSONObject(i);
+                                sc.updateMsg(c.getString("ID"),c.getString("SRVID"),c.getString("STATUS"));
+                            }
+                        }
+                    }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+
+            }
+            Log.i("RESULT",String.valueOf(result));
+        }
+    }
+
+
 }
 

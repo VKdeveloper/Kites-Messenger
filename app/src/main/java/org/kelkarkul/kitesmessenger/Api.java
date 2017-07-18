@@ -42,6 +42,9 @@ public class Api {
             case "user_info":
                 result = parent_url+"messenger_user_info.php?set_info=true";
                 break;
+            case "sync_msg_stat":
+                result = parent_url+"messenger_messages.php?sync_msg_stat=true";
+                break;
             default:
                 return result;
         }

@@ -45,6 +45,7 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_edit"
                 android:padding="10dp"
+                android:id="@+id/stat_edit"
                 android:drawingCacheQuality="high"/>
         </LinearLayout>
     </LinearLayout>

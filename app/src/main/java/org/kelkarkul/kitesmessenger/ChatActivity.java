@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.UiThread;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -22,12 +24,13 @@ import java.util.HashMap;
 public class ChatActivity extends Activity {
     ListView lv;
     ArrayList<HashMap<String,String>> list ;
-    ChatListHandler clh;
+    public static ChatListHandler clh;
     LinearLayout ll;
     StorageController sc;
     Handler handler_beared ,handler_exit;
     boolean mHand =false;
     MediaPlayer m;
+    public static Handler UIHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +69,6 @@ public class ChatActivity extends Activity {
                     }, 1000);
                 }
                 else {
-                    playBeep();
                     mHand = true;
                     HashMap<String, String> map = new HashMap<String, String>();
                     SharedPreferences sp = getSharedPreferences("user_conv",MODE_PRIVATE);
@@ -84,14 +86,17 @@ public class ChatActivity extends Activity {
                     //if(list.size() >0)
                     //{
                     //clh = new ChatListHandler(ChatActivity.this,list,R.layout.listview_chat,new String[]{"USER_MSG"},new int[]{R.id.msg_right});
-                    clh.setListData(list);
-                    clh.notifyDataSetChanged();
+                   // clh.setListData(list);
+                    //clh.notifyDataSetChanged();
                     scrollMyListViewToBottom();
                     handler_exit.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             handler_beared.removeCallbacksAndMessages(null);
                             mHand = false;
+                            playBeep();
+                            ChatViewHandler cvh = new ChatViewHandler(ChatActivity.this,ChatActivity.this);
+                            cvh.refreshList();
                         }
                     },2500);
 
@@ -106,7 +111,8 @@ public class ChatActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 clh.notifyDataSetChanged();
                 TextView msg_right=(TextView) view.findViewById(R.id.msg_right_chat);
-                Toast.makeText(ChatActivity.this, msg_right.getText().toString(), Toast.LENGTH_SHORT).show();
+                TextView msg_left=(TextView) view.findViewById(R.id.msg_left);
+                Toast.makeText(ChatActivity.this, msg_left.getText().toString()+" "+msg_right.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         });
         iv.setOnClickListener(new View.OnClickListener() {
@@ -137,12 +143,14 @@ public class ChatActivity extends Activity {
             public void run() {
 
                 // Select the last row so it will scroll into view...
-                SharedPreferences sp = getSharedPreferences("user_conv",MODE_PRIVATE);
-                list= sc.getConv(sp.getString("USER_ID",""));
-                clh = new ChatListHandler(ChatActivity.this,list,R.layout.listview_chat,new String[]{"MSG"},new int[]{R.id.msg_right_chat});
-                lv.setAdapter(clh);
-                //lv.setSelection(clh.getCount() - 1);
-                lv.smoothScrollToPosition(clh.getCount() - 1);
+//                SharedPreferences sp = getSharedPreferences("user_conv",MODE_PRIVATE);
+//                list= sc.getConv(sp.getString("USER_ID",""));
+//                clh = new ChatListHandler(ChatActivity.this,list,R.layout.listview_chat,new String[]{"MSG"},new int[]{R.id.msg_right_chat});
+//                lv.setAdapter(clh);
+//                //lv.setSelection(clh.getCount() - 1);
+//                lv.smoothScrollToPosition(clh.getCount() - 1);
+                ChatViewHandler chatViewHandler = new ChatViewHandler(ChatActivity.this,ChatActivity.this);
+                chatViewHandler.refresh();
                 if(mHand) {
                     handler_beared.postDelayed(this, 1000);
                 }
@@ -175,5 +183,37 @@ public class ChatActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent msg) {
+
+        switch(keyCode) {
+            case(KeyEvent.KEYCODE_BACK):
+                Intent intent = new Intent(this, ConversationActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+        }
+        return false;
+    }
+
+
+//
+//    static {
+//        UIHandler = new Handler(Looper.getMainLooper());
+//    }
+//
+//    public static void runOnUI(Runnable runnable) {
+//        UIHandler.post(runnable);
+//    }
+
+    @UiThread
+    public void updateList() {
+        ChatViewHandler chatViewHandler = new ChatViewHandler(ChatActivity.this,ChatActivity.this);
+        chatViewHandler.refresh();
+//        if(mHand) {
+//            handler_beared.postDelayed(this, 1000);
+//        }
     }
 }

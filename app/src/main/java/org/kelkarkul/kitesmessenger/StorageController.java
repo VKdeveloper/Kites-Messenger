@@ -188,6 +188,28 @@ class StorageController extends SQLiteOpenHelper {
         return map;
     }
 
+    public ArrayList<HashMap<String,String>> getSrvidJson()
+    {
+        //List<String> map = new ArrayList<>();
+        ArrayList<HashMap<String,String>> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql_lite = "select SRVID,ID from "+TABLE_MSG +" WHERE MSG_STAT ='Y'";
+        Cursor c = db.rawQuery(sql_lite,null);
+        if (c.moveToFirst()) {
+            do {
+                // Adding id to list
+                HashMap<String,String> map = new HashMap<>();
+                map.put("SRVID",c.getString(0));
+                map.put("ID",c.getString(1));
+                list.add(map);
+            } while (c.moveToNext());
+        }
+        db.close();
+        return list;
+    }
+
+
+
     /////////////////////// Server Sync ///////////////////////
 
     public ArrayList<HashMap<String,String>> getMessages()
