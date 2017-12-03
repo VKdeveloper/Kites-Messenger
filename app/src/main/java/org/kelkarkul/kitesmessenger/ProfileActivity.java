@@ -44,11 +44,11 @@ public class ProfileActivity extends AppCompatActivity {
                 FontsOverride.setDefaultFont(ProfileActivity.this, "MONOSPACE", "font.ttf");
             }
         }, 500);
-        TextView user_num = (TextView) findViewById(R.id.user_num);
-        TextView user_name = (TextView) findViewById(R.id.user_name);
-        TextView user_stat = (TextView) findViewById(R.id.user_stat);
-        user_num.setText(sp.getString("USER_NUM",""));
-        user_name.setText(sp_getter.getString("user_name",""));
-        user_stat.setText(sp_getter.getString("user_stat",""));
+//        TextView user_num = (TextView) findViewById(R.id.user_num);
+//        TextView user_name = (TextView) findViewById(R.id.user_name);
+//        TextView user_stat = (TextView) findViewById(R.id.user_stat);
+        //user_num.setText(sp.getString("USER_NUM",""));
+        //user_name.setText(sp_getter.getString("user_name",""));
+        //user_stat.setText(sp_getter.getString("user_stat",""));
     }
 }

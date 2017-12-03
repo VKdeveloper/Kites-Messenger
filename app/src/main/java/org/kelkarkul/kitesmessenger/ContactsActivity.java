@@ -129,6 +129,8 @@ public class ContactsActivity extends AppCompatActivity {
 //                            + " AND " + ContactsContract.Contacts.HAS_PHONE_NUMBER
 //                            + "=1", null, sortOrder);
                 if (phones.moveToFirst()) {
+                    //HashMap<String, String> dup_map = new HashMap<>();
+                    String lastnumber= "";
                     do
                     {
                         HashMap<String, String> map = new HashMap<>();
@@ -138,7 +140,13 @@ public class ContactsActivity extends AppCompatActivity {
                         //String name=phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                         // String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                         // Toast.makeText(getApplicationContext(),name, Toast.LENGTH_LONG).show()
-                        list.add(map);
+                        if(!lastnumber.equals(phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replace("-","").replace("+91","").replace(" ","")))
+                        {
+                            if (!list.contains(map)) {
+                                lastnumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replace("-", "").replace("+91", "").replace(" ", "");
+                                list.add(map);
+                            }
+                        }
                     }
                     while (phones.moveToNext());
                 }

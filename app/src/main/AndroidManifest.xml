@@ -53,7 +53,7 @@
             android:name="com.novoda.merlin.service.MerlinService"
             android:exported="false" />
         <service
-            android:name=".OnlineService"
+            android:name=".SyncDataService"
             android:enabled="true"
             android:exported="true" />
         <service
@@ -101,11 +101,11 @@
         </activity>
         <activity
             android:name=".StatusActivity"
-            android:label="Status"
-            android:parentActivityName=".ConversationActivity">
+            android:parentActivityName=".IntActivity"
+            android:label="Add status">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.kelkarkul.kitesmessenger.ConversationActivity" />
+                android:value=".IntActivity" />
         </activity>
         <activity android:name=".NameActivity"
             android:label="About"/>

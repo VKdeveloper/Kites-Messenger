@@ -71,6 +71,17 @@
         android:fastScrollEnabled="true"
         android:overScrollMode="ifContentScrolls"
         android:layout_above="@+id/button_panel"/>
+    <!--<WebView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:id="@+id/web_list_chat"-->
+        <!--android:stackFromBottom="true"-->
+        <!--android:divider="@android:color/transparent"-->
+        <!--android:layout_below="@+id/act_bar"-->
+        <!--android:orientation="vertical"-->
+        <!--android:fastScrollEnabled="true"-->
+        <!--android:overScrollMode="ifContentScrolls"-->
+        <!--android:layout_above="@+id/button_panel"/>-->
     <!--android:fastScrollAlwaysVisible="true"-->
     <LinearLayout
         android:id="@+id/button_panel"

@@ -14,12 +14,12 @@ public class IntActivity extends AppCompatActivity {
         if(us.isFirstTimeRunner())
         {
             if(us.isUserLoggedIn()) {
-                Intent convers = new Intent(IntActivity.this,ConversationActivity.class);
-                startActivity(convers);
-                Intent online_service = new Intent(IntActivity.this,OnlineService.class);
+                Intent online_service = new Intent(IntActivity.this,SyncDataService.class);
                 startService(online_service);
                 Intent sync_service = new Intent(IntActivity.this,MessageService.class);
                 startService(sync_service);
+                Intent convers = new Intent(IntActivity.this,ConversationActivity.class);
+                startActivity(convers);
                 finish();
             }
             else

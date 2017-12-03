@@ -31,7 +31,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class OnlineService extends Service {
+public class SyncDataService extends Service {
     private static Timer timer = new Timer();
     public static final String LOGIN_SESSION = "LOGIN_SESSION";
 
@@ -86,7 +86,7 @@ public class OnlineService extends Service {
             SharedPreferences sp = getSharedPreferences("messenger_user_stat", MODE_PRIVATE);
             SharedPreferences sp_getter = getSharedPreferences("user_info", MODE_PRIVATE);
             Gson gson = new Gson();
-            StorageController sc = new StorageController(OnlineService.this);
+            StorageController sc = new StorageController(SyncDataService.this);
             if(sc.getMessages().size() > 0) {
                 new msgTask().execute(sp.getString("userNum", ""), gson.toJson(sc.getMessages()));
             }
@@ -108,7 +108,7 @@ public class OnlineService extends Service {
         protected String doInBackground(String... params) {
 
             HttpClient httpClient = new DefaultHttpClient();
-            Api api_controller = new Api(OnlineService.this);
+            Api api_controller = new Api(SyncDataService.this);
             HttpPost httpPost = new HttpPost(api_controller.getApiUrl("sync_messages"));
 
             BasicNameValuePair numberBasicNameValuePair = new BasicNameValuePair("number", params[0]);
@@ -161,7 +161,7 @@ public class OnlineService extends Service {
             try {
                 JSONObject jsonResponse = new JSONObject(result);
                 JSONArray jsonMainNode = jsonResponse.getJSONArray("response");
-                StorageController db = new StorageController(OnlineService.this);
+                StorageController db = new StorageController(SyncDataService.this);
                 for(int i =0 ; i <jsonMainNode.length() ; i++)
                 {
                     JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
@@ -191,7 +191,7 @@ public class OnlineService extends Service {
         protected String doInBackground(String... params) {
 
             HttpClient httpClient = new DefaultHttpClient();
-            Api api_controller = new Api(OnlineService.this);
+            Api api_controller = new Api(SyncDataService.this);
             HttpPost httpPost = new HttpPost(api_controller.getApiUrl("sync_conv"));
 
             BasicNameValuePair numberBasicNameValuePair = new BasicNameValuePair("number", params[0]);
@@ -246,7 +246,7 @@ public class OnlineService extends Service {
             try {
                 JSONObject jsonResponse = new JSONObject(result);
                 JSONArray jsonMainNode = jsonResponse.getJSONArray("response");
-                StorageController db = new StorageController(OnlineService.this);
+                StorageController db = new StorageController(SyncDataService.this);
                 for(int i =0 ; i <jsonMainNode.length() ; i++)
                 {
                     JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);

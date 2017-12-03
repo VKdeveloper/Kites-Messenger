@@ -29,7 +29,7 @@
                     android:textAppearance="@style/TextStyle"
                     android:padding="10dp"
                     android:textColor="@android:color/black"
-                    android:text="Vikrant Kelkar"
+                    android:text=""
                     android:textStyle="bold"
                     android:singleLine="true"
                     android:textSize="22sp"
@@ -42,7 +42,7 @@
                     android:paddingBottom="15dp"
                     android:id="@+id/user_stat"
                     android:textColor="@android:color/black"
-                    android:text="Vikrant Kelkar"
+                    android:text=""
                     android:textSize="16sp"/>
             </LinearLayout>
     </LinearLayout>
